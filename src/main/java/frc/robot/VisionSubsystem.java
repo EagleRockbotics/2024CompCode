@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -120,7 +121,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
-  public HashMap<Integer, Translation2d> getDistances () {
+  public HashMap<Integer, Translation2d> getDistances (Rotation2d robotAngle) {
     HashMap<Integer, Translation2d> out = new HashMap<>();
     for (Map.Entry<Camera, List<PhotonTrackedTarget>> entry: tags.entrySet()) {
       var camera = entry.getKey();
@@ -133,10 +134,10 @@ public class VisionSubsystem extends SubsystemBase {
         var tagHeight = tagOffset.get(id);
 
         var tempyDist = (tagHeight - camera.zOffset) / Math.tan(yawAngle);
-        var xDist = (Math.tan(pitchAngle) * tempyDist) + camera.xOffset;
-        var yDist = tempyDist + camera.yOffset;
+        var yDist = (Math.tan(pitchAngle) * tempyDist) + camera.xOffset;
+        var xDist = tempyDist + camera.yOffset;
 
-        out.put(Integer.valueOf(id), new Translation2d(xDist, yDist));
+        out.put(Integer.valueOf(id), new Translation2d(xDist, yDist).rotateBy(robotAngle));
       }
     }
     return out;

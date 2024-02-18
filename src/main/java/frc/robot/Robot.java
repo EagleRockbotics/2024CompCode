@@ -172,17 +172,19 @@ public class Robot extends TimedRobot {
   /** This function is called once when test mode is enabled. */
   @Override
   public void testInit() {
-    SmartDashboard.putData(limelightField);
+    SmartDashboard.putData("Limelight Field", limelightField);
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
+    m_visionSystem.periodic();
     if(m_DriveStick.getRawButtonReleased(10)) {
       m_swerveDrive.resetEncoders();
     }
 
     limelightField.setRobotPose(m_visionSystem.getRobotPose(Rotation2d.fromDegrees(0)));
+    
     // double angle = (Math.atan2(m_DriveStick.getRawAxis(1), m_DriveStick.getRawAxis(0)) * 180 / Math.PI) - 90;
     // double speed = Math.sqrt(Math.pow(m_DriveStick.getRawAxis(1), 2) + Math.pow(m_DriveStick.getRawAxis(0), 2));
     // if (Math.abs(speed) > ModuleConstants.kDeadzone) {

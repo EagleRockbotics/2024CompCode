@@ -23,6 +23,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 class Camera {
@@ -43,6 +44,14 @@ class Camera {
     return result.getTargets();
   }
 
+  public void printVisibleTags () {
+    for (PhotonTrackedTarget target : getVisibleTags()) {
+      System.out.println(target.getFiducialId());
+      System.out.println(target.getYaw());
+      System.out.println(target.getPitch());
+    }
+  }
+
   public Camera(String nam) {
     self = new PhotonCamera(nam);
     pitchOffest = 0;
@@ -57,6 +66,7 @@ class Camera {
 
   public Camera(String name, double pOffset, double yaOffset, double rOffset, double xoffset, double yoffset,
       double zoffset) {
+        SmartDashboard.putString("Photonvision Camera Name", name);
     self = new PhotonCamera(name);
     pitchOffest = pOffset;
     yawOffset = yaOffset;
@@ -112,12 +122,16 @@ public class VisionSubsystem extends SubsystemBase {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  
 
   }
 
   @Override
   public void periodic() {
     updateTagList();
+    for (Map.Entry<Integer, Transform2d> entry : getDistances(Rotation2d.fromDegrees(0)).entrySet()) {
+        System.out.println("ID:" + entry.getKey().toString() + " Distances:" + new Double(entry.getValue().getX()).toString() + " ," + new Double(entry.getValue().getY()).toString());
+          }
   }
 
   void updateTagList() {
@@ -138,9 +152,9 @@ public class VisionSubsystem extends SubsystemBase {
         var yawAngle = tag.getYaw() + camera.yawOffset;
         var tagHeight = tagOffset.get(id);
 
-        var tempyDist = (tagHeight - camera.zOffset) / Math.tan(yawAngle);
-        var yDist = (Math.tan(pitchAngle) * tempyDist) + camera.xOffset;
-        var xDist = tempyDist + camera.yOffset;
+        var tempxDist = (tagHeight - camera.zOffset) / Math.tan(yawAngle * Math.PI/180);
+        var yDist = (Math.tan(pitchAngle * Math.PI/180) * tempxDist) + camera.xOffset;
+        var xDist = tempxDist + camera.xOffset;
 
         out.put(Integer.valueOf(id), new Transform2d(new Translation2d(xDist, yDist).rotateBy(robotAngle), Rotation2d.fromDegrees(0)));
       }
@@ -159,12 +173,13 @@ public class VisionSubsystem extends SubsystemBase {
     }
     Pose2d sum = new Pose2d();
 
-    for (Pose2d pose : poses) {
-        sum.getTranslation().plus(pose.getTranslation());
+    if ( poses.size() == 0) {
+      return sum;
     }
+
     sum.div(poses.size());
 
-    return sum;
+    return poses.get(0);
   }
 
 } 

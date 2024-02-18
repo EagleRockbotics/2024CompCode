@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.proto.Controller;
@@ -41,6 +43,10 @@ public class Robot extends TimedRobot {
   private static SendableChooser<Command> autoChooser;
   private static Command m_autonomousCommand;
 
+  private static VisionSubsystem m_visionSystem = new VisionSubsystem();
+
+  private static Field2d limelightField = new Field2d();
+
   /**
    * This function is run when the robot is first started up and should be used
    * for any
@@ -48,15 +54,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-
-
-   
-
     m_swerveDrive = new SwerveDrive();
     autoChooser = AutoBuilder.buildAutoChooser();
      SmartDashboard.putData(autoChooser);
     m_DriveStick = new Joystick(ControllerConstants.kDrivingJoystickPort);
     m_HelperStick = new Joystick(ControllerConstants.kHelperJoystickPort);
+
   }
 
   /**
@@ -72,6 +75,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+
+    
   }
 
   /**
@@ -167,6 +172,7 @@ public class Robot extends TimedRobot {
   /** This function is called once when test mode is enabled. */
   @Override
   public void testInit() {
+    SmartDashboard.putData(limelightField);
   }
 
   /** This function is called periodically during test mode. */
@@ -175,6 +181,8 @@ public class Robot extends TimedRobot {
     if(m_DriveStick.getRawButtonReleased(10)) {
       m_swerveDrive.resetEncoders();
     }
+
+    limelightField.setRobotPose(m_visionSystem.getRobotPose(Rotation2d.fromDegrees(0)));
     // double angle = (Math.atan2(m_DriveStick.getRawAxis(1), m_DriveStick.getRawAxis(0)) * 180 / Math.PI) - 90;
     // double speed = Math.sqrt(Math.pow(m_DriveStick.getRawAxis(1), 2) + Math.pow(m_DriveStick.getRawAxis(0), 2));
     // if (Math.abs(speed) > ModuleConstants.kDeadzone) {

@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -21,14 +20,13 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-
-
 class Camera {
-  PhotonCamera self; 
+  PhotonCamera self;
 
   public double yOffset;
   public double xOffset;
@@ -40,9 +38,9 @@ class Camera {
 
   HashMap<Integer, Float> tags = new HashMap<>();
 
-  public List<PhotonTrackedTarget> getVisibleTags () {
-      var result = self.getLatestResult();
-      return result.getTargets();
+  public List<PhotonTrackedTarget> getVisibleTags() {
+    var result = self.getLatestResult();
+    return result.getTargets();
   }
 
   public Camera(String nam) {
@@ -57,16 +55,17 @@ class Camera {
 
   }
 
-  public Camera(String name, double pOffset, double yaOffset, double rOffset, double xoffset, double yoffset, double zoffset) {
+  public Camera(String name, double pOffset, double yaOffset, double rOffset, double xoffset, double yoffset,
+      double zoffset) {
     self = new PhotonCamera(name);
     pitchOffest = pOffset;
     yawOffset = yaOffset;
     rollOffset = rOffset;
-    //side-side
+    // side-side
     xOffset = xoffset;
-    //forward-backward
+    // forward-backward
     yOffset = yoffset;
-    //up-down
+    // up-down
     zOffset = zoffset;
   }
 }
@@ -75,61 +74,67 @@ public class VisionSubsystem extends SubsystemBase {
   /** Creates a new VisionSubsystem. */
   ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
   Map<Integer, Double> tagOffset = new HashMap<>();
-
-  
+  Map<Integer, Pose2d> tagLocations = new HashMap<>();
 
   HashMap<Camera, List<PhotonTrackedTarget>> tags = new HashMap<>();
 
   List<Camera> cameras = new ArrayList();
 
-  public VisionSubsystem() { 
-   try {
+  public VisionSubsystem() {
+    try {
       tagOffset = mapper
-                  .readValue(Filesystem
-                                  .getDeployDirectory()
-                                  .toPath()
-                                  .resolve(Constants.APRILTAG_JSON_NAME)
-                                  .toFile(), new TypeReference<Map<Integer, Double>>(){}); 
-      JsonNode root = mapper.readTree(Filesystem
-                                  .getDeployDirectory()
-                                  .toPath()
-                                  .resolve(Constants.CAMERA_JSON_NAME)
-                                  .toFile());
-      for (JsonNode node : root) {
-        cameras.add(new Camera(node.toPrettyString(), 
-                    node.get("pitch").asDouble(), 
-                    node.get("yaw").asDouble(),
-                    node.get("roll").asDouble(),
-                    node.get("x").asDouble(),
-                    node.get("y").asDouble(),
-                    node.get("z").asDouble()));
+          .readValue(Filesystem
+              .getDeployDirectory()
+              .toPath()
+              .resolve(Constants.APRILTAG_JSON_NAME)
+              .toFile(), new TypeReference<Map<Integer, Double>>() {
+              });
+      JsonNode camRoot = mapper.readTree(Filesystem
+          .getDeployDirectory()
+          .toPath()
+          .resolve(Constants.CAMERA_JSON_NAME)
+          .toFile());
+      JsonNode tagPosRoot = mapper
+          .readTree(Filesystem.getDeployDirectory().toPath().resolve(Constants.APRILTAG_POSITION_JSON_NAME).toFile());
+      for (JsonNode node : tagPosRoot) {
+        tagLocations.put(node.get("id").asInt(), new Pose2d(node.get("x").asDouble(), node.get("y").asDouble(), Rotation2d.fromDegrees(node.get("rotation").asDouble())));
       }
+      for (JsonNode node : camRoot) {
+        cameras.add(new Camera(node.get("name").asText(),
+            node.get("pitch").asDouble(),
+            node.get("yaw").asDouble(),
+            node.get("roll").asDouble(),
+            node.get("x").asDouble(),
+            node.get("y").asDouble(),
+            node.get("z").asDouble()));
+      }
+
     } catch (Exception e) {
       e.printStackTrace();
     }
 
-}
+  }
 
   @Override
   public void periodic() {
     updateTagList();
   }
 
-  void updateTagList () {
-    for (Camera camera: cameras) {
+  void updateTagList() {
+    for (Camera camera : cameras) {
       tags.put(camera, camera.getVisibleTags());
     }
   }
 
-  public HashMap<Integer, Translation2d> getDistances (Rotation2d robotAngle) {
-    HashMap<Integer, Translation2d> out = new HashMap<>();
-    for (Map.Entry<Camera, List<PhotonTrackedTarget>> entry: tags.entrySet()) {
+  public HashMap<Integer, Transform2d> getDistances(Rotation2d robotAngle) {
+    HashMap<Integer, Transform2d> out = new HashMap<>();
+    for (Map.Entry<Camera, List<PhotonTrackedTarget>> entry : tags.entrySet()) {
       var camera = entry.getKey();
-      for(PhotonTrackedTarget tag: entry.getValue()) {
+      for (PhotonTrackedTarget tag : entry.getValue()) {
         var id = tag.getFiducialId();
-        //x
+        // x
         var pitchAngle = tag.getPitch() + camera.pitchOffest;
-        //z
+        // z
         var yawAngle = tag.getYaw() + camera.yawOffset;
         var tagHeight = tagOffset.get(id);
 
@@ -137,12 +142,29 @@ public class VisionSubsystem extends SubsystemBase {
         var yDist = (Math.tan(pitchAngle) * tempyDist) + camera.xOffset;
         var xDist = tempyDist + camera.yOffset;
 
-        out.put(Integer.valueOf(id), new Translation2d(xDist, yDist).rotateBy(robotAngle));
+        out.put(Integer.valueOf(id), new Transform2d(new Translation2d(xDist, yDist).rotateBy(robotAngle), Rotation2d.fromDegrees(0)));
       }
     }
     return out;
   }
 
-  
+  public Pose2d getRobotPose (Rotation2d rotation) {
+    var limelightOffsets = getDistances(rotation);
+    List<Pose2d> poses = new ArrayList<>();
+    for (Map.Entry<Integer, Transform2d> entry : limelightOffsets.entrySet()) {
+      var id = entry.getKey();
+      var offset = entry.getValue();
 
-}
+      poses.add(tagLocations.get(id).transformBy(offset.inverse()));
+    }
+    Pose2d sum = new Pose2d();
+
+    for (Pose2d pose : poses) {
+        sum.getTranslation().plus(pose.getTranslation());
+    }
+    sum.div(poses.size());
+
+    return sum;
+  }
+
+} 

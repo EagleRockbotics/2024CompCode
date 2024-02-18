@@ -23,6 +23,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
   public static String APRILTAG_JSON_NAME = "tags.json";
   public static String CAMERA_JSON_NAME = "cams.jsons";
+  public static String APRILTAG_POSITION_JSON_NAME = "tagPos.json";
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }

@@ -1,5 +1,6 @@
 {
     "rock" : {
+        "name" : "rock",
         "pitch" : "0",
         "yaw" : "0",
         "roll" : "0",

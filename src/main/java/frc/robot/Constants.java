@@ -27,7 +27,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
   public static class ControllerConstants {
-    public static int kDrivingJoystickPort = 0;
+    public static int kDrivingJoystickPort = 2;
     public static int kDrivingJoystickX = 1;
     public static int kDrivingJoystickY = 0;
     public static int kDrivingJoystickZ = 2;
@@ -35,7 +35,7 @@ public final class Constants {
     public static double kSteerSpeed = 1;
     public static double kSteerDeadzone = 0.1;
     public static double kDriveDeadzone = 0.1;
-    public static int kHelperJoystickPort = 2;
+    public static int kHelperJoystickPort = 0;
   }
   public static class DriveConstants {
     public static double kMaxSpeedMetersPerSecond = 4.5;
@@ -77,6 +77,16 @@ public final class Constants {
 
 
     public static boolean kGyroReversed = false;
+
+    //Pathplanner Translation PID Constants
+    public static double TkP = 0.01;
+    public static double TkI = 0.0;
+    public static double TkD = 0.0;
+
+    //Pathplanner Rotation PID Constants
+    public static double RkP = 0.0001;
+    public static double RkI = 0.0;
+    public static double RkD = 0.0;
   }
 
 
@@ -85,7 +95,7 @@ public final class Constants {
 
     public static boolean FL_driveInverted = true;
     public static boolean FL_steerInverted = false;
-
+ 
     public static boolean FR_driveInverted = false;
     public static boolean FR_steerInverted = false;
 

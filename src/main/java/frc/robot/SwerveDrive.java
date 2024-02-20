@@ -65,8 +65,8 @@ public class SwerveDrive implements Subsystem {
                 });
 
         AutoBuilder.configureHolonomic(this::getPose, this::resetPose, this::getCurrentRobotRelativeSpeeds,
-                this::driveRobotRelative, new HolonomicPathFollowerConfig(new PIDConstants(5.0, 0.0, 0.0),
-                        new PIDConstants(5.0, 0.0, 0.0), 4.5,
+                this::driveRobotRelative, new HolonomicPathFollowerConfig(new PIDConstants(DriveConstants.TkP, DriveConstants.TkI, DriveConstants.TkD),
+                        new PIDConstants(DriveConstants.RkP, DriveConstants.RkI, DriveConstants.RkD), 4.5,
                         Math.sqrt(Math.pow(DriveConstants.kTrackWidth, 2) + Math.pow(DriveConstants.kWheelBase, 2)),
                         new ReplanningConfig()),
                 () -> {
@@ -119,9 +119,9 @@ public class SwerveDrive implements Subsystem {
                 desiredStates[0], desiredStates[1], desiredStates[2], desiredStates[3]
         });
         publisherBlue.set(new SwerveModuleState[] { m_FLSwerve.getState(), m_FRSwerve.getState(), m_RLSwerve.getState(),
-                m_RRSwerve.getState() });
+                m_RRSwerve.getState() }); 
 
-        m_odometry.update(m_gyro.getRotation2d(), new SwerveModulePosition[] { m_FLSwerve.getPosition(),
+        m_odometry.update(Rotation2d.fromRadians(((m_gyro.getAngle()+90) * Math.PI)/180), new SwerveModulePosition[] { m_FLSwerve.getPosition(),
                 m_FRSwerve.getPosition(), m_RLSwerve.getPosition(), m_RRSwerve.getPosition() });
         m_field2d.setRobotPose(m_odometry.getPoseMeters());
 
@@ -186,7 +186,7 @@ public class SwerveDrive implements Subsystem {
     }
 
     public void resetPose(Pose2d pose) {
-        m_odometry.resetPosition(m_gyro.getRotation2d(), getModulePositions(), pose);
+        m_odometry.resetPosition(Rotation2d.fromRadians(((m_gyro.getAngle()) * Math.PI)/180), getModulePositions(), pose);
     }
 
     public ChassisSpeeds getCurrentRobotRelativeSpeeds() {

@@ -129,9 +129,9 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     updateTagList();
-    for (Map.Entry<Integer, Transform2d> entry : getDistances(Rotation2d.fromDegrees(0)).entrySet()) {
-        System.out.println("ID:" + entry.getKey().toString() + " Distances:" + new Double(entry.getValue().getX()).toString() + " ," + new Double(entry.getValue().getY()).toString());
-          }
+    // for (Map.Entry<Integer, Transform2d> entry : getDistances(Rotation2d.fromDegrees(0)).entrySet()) {
+    //     System.out.println("ID:" + entry.getKey().toString() + " Distances:" + new Double(entry.getValue().getX()).toString() + " ," + new Double(entry.getValue().getY()).toString());
+    //       }
   }
 
   void updateTagList() {
@@ -162,7 +162,7 @@ public class VisionSubsystem extends SubsystemBase {
     return out;
   }
 
-  public Pose2d getRobotPose (Rotation2d rotation) {
+  public List<Pose2d> getRobotPose (Rotation2d rotation) {
     var limelightOffsets = getDistances(rotation);
     List<Pose2d> poses = new ArrayList<>();
     for (Map.Entry<Integer, Transform2d> entry : limelightOffsets.entrySet()) {
@@ -171,15 +171,8 @@ public class VisionSubsystem extends SubsystemBase {
 
       poses.add(tagLocations.get(id).transformBy(offset.inverse()));
     }
-    Pose2d sum = new Pose2d();
-
-    if ( poses.size() == 0) {
-      return sum;
-    }
-
-    sum.div(poses.size());
-
-    return poses.get(0);
+    
+    return poses;
   }
 
 } 

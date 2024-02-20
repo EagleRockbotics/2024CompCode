@@ -183,7 +183,7 @@ public class Robot extends TimedRobot {
       m_swerveDrive.resetEncoders();
     }
 
-    limelightField.setRobotPose(m_visionSystem.getRobotPose(Rotation2d.fromDegrees(0)));
+    try { limelightField.setRobotPose(m_visionSystem.getRobotPose(Rotation2d.fromDegrees(0)).get(0)); } catch (Exception e) {}
     
     // double angle = (Math.atan2(m_DriveStick.getRawAxis(1), m_DriveStick.getRawAxis(0)) * 180 / Math.PI) - 90;
     // double speed = Math.sqrt(Math.pow(m_DriveStick.getRawAxis(1), 2) + Math.pow(m_DriveStick.getRawAxis(0), 2));

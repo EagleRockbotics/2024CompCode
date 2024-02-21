@@ -19,6 +19,11 @@ public class Shooter {
     private final CANcoder m_rotatingEncoder;
     private final PIDController m_rotatingController;
     private final Timer m_timer = new Timer();
+    private final Timer m_timer2 = new Timer();
+    // the current command being run
+    private String m_currentCommand = "rest";
+    // the current distance from target, should be continually updated if possible
+    private double m_disFromTarget = 0;
 
     public Shooter(int shootingMotorLeftCanId, int shootingMotorRightCanId, int rotatingMotorCanId, int rotatingEncoderCanId, int intakeMotorCanId) {
         m_shootingMotorLeft = new CANSparkMax(shootingMotorLeftCanId, MotorType.kBrushless);
@@ -58,27 +63,53 @@ public class Shooter {
     }
 
     /**
-     * Runs the shooter.
-     * This assumes that the shooter is pointing directly at the target already, 
-     * other PID controllers may have to be used to make sure this happens
-     * @param tryShooting If false is passed into this value, the shooter will be lowered to its default position, and motor will stop running
-     * @param distanceFromTarget The distance from the target
+     * Sets the current running command for the shooter
+     * @param command What command to run. Should be ShooterConstants.(kLoadShooter, kFireShooter, kDefault)
      */
-    public void runShooter(double distanceFromTarget, boolean tryShooting) {
-        if (tryShooting) {
+    public void setCommand(String command) {
+        m_currentCommand = command;
+    }
+
+    /**
+     * Sets the curent dis from target. Should be continually updated whenever possible.
+     * @param dis The distance from the speaker in meters
+     */
+    public void setDisFromTarget(double dis) {
+        m_disFromTarget = dis;
+    }
+
+    /**
+     * Runs the shooter. This function should be called every loop. Use the setCommand function and the setDistance for shooting and loading the shooter
+     */
+    public void runShooter() {
+        if (m_currentCommand == "shoot") {
             m_timer.start();
-            double angle = calculateAngle(distanceFromTarget);
+            double angle = calculateAngle(m_disFromTarget);
             setAngle(angle);
             m_shootingMotorLeft.set(1);
             m_shootingMotorRight.set(-1);
             if (m_timer.get() > 4) {
+                m_timer2.start();
                 m_intakeMotor.set(.2);
+                if (m_timer2.get() > 2) {
+                    setCommand(ShooterConstants.kDefault);
+                }
             } else {
                 m_intakeMotor.set(0);
             }
+        } else if (m_currentCommand == "load") {
+            m_timer.start();
+            if (m_timer.get() < .5) {
+                m_intakeMotor.set(.2);
+            } else {
+                m_intakeMotor.set(0);
+                setCommand(ShooterConstants.kDefault);
+            }
         } else {
             m_timer.stop();
+            m_timer2.stop();
             m_timer.reset();
+            m_timer2.reset();
             m_shootingMotorLeft.set(0);
             m_shootingMotorRight.set(0);
             m_intakeMotor.set(0);

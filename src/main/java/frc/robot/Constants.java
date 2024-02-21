@@ -40,6 +40,9 @@ public final class Constants {
     public static double kShooterTolerance = 2; // in degrees
     public static int kShooterRotatingEncoderCanId = 11;
     public static double kDefaultShooterPosition = -20; // in degrees
+    public static String kLoadShooter = "load";
+    public static String kFireShooter = "shoot";
+    public static String kDefault = "rest";
   }
 
   public static class FieldConstants {

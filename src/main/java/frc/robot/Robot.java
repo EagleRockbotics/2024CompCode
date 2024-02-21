@@ -62,7 +62,6 @@ public class Robot extends TimedRobot {
      SmartDashboard.putData(autoChooser);
     m_DriveStick = new Joystick(ControllerConstants.kDrivingJoystickPort);
     m_HelperStick = new Joystick(ControllerConstants.kHelperJoystickPort);
-
   }
 
   /**

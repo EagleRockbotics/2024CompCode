@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Timer;
 
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.FieldConstants;
@@ -15,6 +16,7 @@ public class Shooter {
     private final CANSparkMax m_rotatingMotor;
     private final CANcoder m_rotatingEncoder;
     private final PIDController m_rotatingController;
+    private final Timer m_timer = new Timer();
 
     public Shooter(int shootingMotorCanId, int rotatingMotorCanId, int rotatingEncoderCanId) {
         m_shootingMotor = new CANSparkMax(shootingMotorCanId, MotorType.kBrushless);
@@ -53,19 +55,21 @@ public class Shooter {
      * Runs the shooter.
      * This assumes that the shooter is pointing directly at the target already, 
      * other PID controllers may have to be used to make sure this happens
-     * @param tryShooting If false is passed into this value, the shooter will be lowered to its default position
+     * @param tryShooting If false is passed into this value, the shooter will be lowered to its default position, and motor will stop running
      * @param distanceFromTarget The distance from the target
      */
     public void runShooter(double distanceFromTarget, boolean tryShooting) {
         if (tryShooting) {
+            m_timer.start();
             double angle = calculateAngle(distanceFromTarget);
             setAngle(angle);
-            if (m_rotatingController.atSetpoint()) {
-                m_shootingMotor.set(1);
-            } else {
-                m_shootingMotor.set(0);
+            m_shootingMotor.set(1);
+            if (m_timer.get() > 4) {
+                // run intake into shooter. This function may be moved into a class containing both the shooter and intake systems
             }
         } else {
+            m_timer.stop();
+            m_timer.reset();
             m_shootingMotor.set(0);
             setAngle(ShooterConstants.kDefaultShooterPosition);
         }

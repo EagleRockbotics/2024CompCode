@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.networktables.*;
 
+import org.opencv.core.Mat.Tuple3;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -22,6 +24,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
+import frc.robot.Constants.ControllerConstants;
 
 public class SwerveDrive implements Subsystem {
     private final SwerveModule m_FLSwerve;
@@ -193,4 +196,35 @@ public class SwerveDrive implements Subsystem {
         return DriveConstants.kDriveKinematics.toChassisSpeeds(getModuleStates());
     }
 
+    /**
+     * Converts axis on controller to speeds
+     * @param xAxis the x axis of the controller
+     * @param yAxis the y axis of the controller
+     * @param zAxis the z axis of the controller
+     * @return outputs an array containg [x speed, y speed, rotation speed]
+     */
+    public double[] JoystickConverter(double xAxis, double yAxis, double zAxis) {
+        double[] XYRotValues = new double[3];
+
+        XYRotValues[0] = xAxis;
+        XYRotValues[1] = yAxis;
+        XYRotValues[2] = zAxis;
+
+        // apply deadzones
+        if (Math.abs(zAxis) <= ControllerConstants.kSteerDeadzone) {
+            XYRotValues[2] = 0;
+        } 
+        if (Math.abs(yAxis) <= ControllerConstants.kDriveDeadzone) {
+            XYRotValues[1] = 0;
+        }
+        if (Math.abs(xAxis) <= ControllerConstants.kDriveDeadzone) {
+            XYRotValues[0] = 0;
+        }
+
+        XYRotValues[0] *= -ControllerConstants.kDrivingSpeed;
+        XYRotValues[1] *= ControllerConstants.kDrivingSpeed;
+        XYRotValues[2] *= -Math.PI * ControllerConstants.kSteerSpeed;
+
+        return XYRotValues;
+    }
 }

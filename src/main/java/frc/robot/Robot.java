@@ -127,31 +127,13 @@ public class Robot extends TimedRobot {
   //Gyro angle was off by 90 degrees, sticks inverted incorrectly, and RobotRelative works better than field relative with no known downsides
   @Override
   public void teleopPeriodic() {
-    var xDriveSpeed = -m_HelperStick.getRawAxis(0) * ControllerConstants.kDrivingSpeed;
-    var yDriveSpeed = m_HelperStick.getRawAxis(1) * ControllerConstants.kDrivingSpeed;
-    var rotDriveSpeed = -m_HelperStick.getRawAxis(4) * Math.PI * ControllerConstants.kSteerSpeed;
 
     if(m_HelperStick.getRawButtonReleased(5)) {
       m_swerveDrive.zeroHeading();
     }
-
-    if (Math.abs(m_HelperStick.getRawAxis(4)) <= ControllerConstants.kSteerDeadzone) {
-      rotDriveSpeed = 0;
-    } 
-
-    if (Math.abs(m_HelperStick.getRawAxis(1)) <= ControllerConstants.kDriveDeadzone) {
-      yDriveSpeed = 0;
-    }
-
-    if (Math.abs(m_HelperStick.getRawAxis(0)) <= ControllerConstants.kDriveDeadzone) {
-      xDriveSpeed = 0;
-    }
-
-    m_swerveDrive.driveFieldRelative(
-        xDriveSpeed, 
-        yDriveSpeed,
-        rotDriveSpeed);
-
+    
+    double[] driveValues = m_swerveDrive.JoystickConverter(m_HelperStick.getRawAxis(0), m_HelperStick.getRawAxis(1), m_HelperStick.getRawAxis(4));
+    m_swerveDrive.driveFieldRelative(driveValues[0], driveValues[1], driveValues[2]);
    
   }
 

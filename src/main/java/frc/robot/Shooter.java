@@ -72,13 +72,16 @@ public class Shooter {
             m_shootingMotorLeft.set(1);
             m_shootingMotorRight.set(-1);
             if (m_timer.get() > 4) {
-                // run intake into shooter. This function may be moved into a class containing both the shooter and intake systems
+                m_intakeMotor.set(.2);
+            } else {
+                m_intakeMotor.set(0);
             }
         } else {
             m_timer.stop();
             m_timer.reset();
             m_shootingMotorLeft.set(0);
             m_shootingMotorRight.set(0);
+            m_intakeMotor.set(0);
             setAngle(ShooterConstants.kDefaultShooterPosition);
         }
     }

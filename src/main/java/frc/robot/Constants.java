@@ -24,9 +24,32 @@ public final class Constants {
   public static String APRILTAG_JSON_NAME = "tags.json";
   public static String CAMERA_JSON_NAME = "cams.json";
   public static String APRILTAG_POSITION_JSON_NAME = "tagPos.json";
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static class ShooterConstants {
+    public static double kShootingRotatingP = 1;
+    public static double kShootingRotatingI = 0;
+    public static double kShootingRotatingD = 0;
+    public static int kShootingRotatingCanId = 9;
+    public static int kShootingCanId = 10;
+    public static double kShooterTolerance = 2; // in degrees
+    public static int kShooterRotatingEncoderCanId = 11;
+    public static double kDefaultShooterPosition = -20; // in degrees
+  }
+
+  public static class FieldConstants {
+    // constants here should be in meters
+    public static double kSpeakerHeight = 5;
+  }
+
+  public static class RobotConstants {
+    // constants here should be in meters
+    public static double kShooterHeight = 4;
+  }
+
   public static class ControllerConstants {
     public static int kDrivingJoystickPort = 0;
     public static int kDrivingJoystickX = 1;
@@ -38,9 +61,9 @@ public final class Constants {
     public static double kDriveDeadzone = 0.1;
     public static int kHelperJoystickPort = 2;
   }
+
   public static class DriveConstants {
     public static double kMaxSpeedMetersPerSecond = 4.5;
-
 
     // Chassis configuration
     public static double kTrackWidth = Units.inchesToMeters(28);
@@ -54,8 +77,6 @@ public final class Constants {
       new Translation2d(-kWheelBase / 2, -kTrackWidth / 2)
       );
     
-
-
     // SPARK MAX CAN IDs
     public static int kFrontLeftDrivingCanId = 6;
     public static int kRearLeftDrivingCanId = 4;

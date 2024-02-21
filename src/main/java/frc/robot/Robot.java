@@ -40,6 +40,8 @@ public class Robot extends TimedRobot {
   private static Joystick m_DriveStick;
   private static Joystick m_HelperStick;
 
+  private static Shooter m_Shooter;
+
   private static SendableChooser<Command> autoChooser;
   private static Command m_autonomousCommand;
 
@@ -55,6 +57,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_swerveDrive = new SwerveDrive();
+    m_Shooter = new Shooter();
     autoChooser = AutoBuilder.buildAutoChooser();
      SmartDashboard.putData(autoChooser);
     m_DriveStick = new Joystick(ControllerConstants.kDrivingJoystickPort);

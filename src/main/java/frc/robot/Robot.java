@@ -131,10 +131,12 @@ public class Robot extends TimedRobot {
     if(m_HelperStick.getRawButtonReleased(5)) {
       m_swerveDrive.zeroHeading();
     }
-    
+
     double[] driveValues = m_swerveDrive.JoystickConverter(m_HelperStick.getRawAxis(0), m_HelperStick.getRawAxis(1), m_HelperStick.getRawAxis(4));
+    if (m_HelperStick.getRawButtonPressed(6)){
+      driveValues[0] = m_swerveDrive.AutoTargeter(kDefaultPeriod); // pass in the angle to the target, if no value is found (i.e. no target is in sight) pass in a value greater than 900 to angleToTag value
+    }
     m_swerveDrive.driveFieldRelative(driveValues[0], driveValues[1], driveValues[2]);
-   
   }
 
   /** This function is called once when the robot is disabled. */

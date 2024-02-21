@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.networktables.*;
+import edu.wpi.first.math.controller.PIDController;
 
 import org.opencv.core.Mat.Tuple3;
 
@@ -31,6 +32,8 @@ public class SwerveDrive implements Subsystem {
     private final SwerveModule m_FRSwerve;
     private final SwerveModule m_RLSwerve;
     private final SwerveModule m_RRSwerve;
+
+    private final PIDController autoTargetingController;
 
     private SwerveDriveOdometry m_odometry;
 
@@ -81,6 +84,7 @@ public class SwerveDrive implements Subsystem {
                 }, this);
         SmartDashboard.putData("Field View", m_field2d);
 
+        autoTargetingController = new PIDController(DriveConstants.kAutoTargettinP, DriveConstants.kAutoTargettinI, DriveConstants.kAutoTargettinD);
     }
 
     public void publishStates() {
@@ -226,5 +230,17 @@ public class SwerveDrive implements Subsystem {
         XYRotValues[2] *= -Math.PI * ControllerConstants.kSteerSpeed;
 
         return XYRotValues;
+    }
+
+    /**
+     * Function for autoAiming towards a tag
+     * @param angleToTag the angle between the robot's current rotation and the degree position
+     * @return returns a new rot value
+     */
+    public double AutoTargeter(double angleToTag) {
+        if (angleToTag > 899) {
+            return Math.PI/2;
+        }
+        return autoTargetingController.calculate(angleToTag);
     }
 }

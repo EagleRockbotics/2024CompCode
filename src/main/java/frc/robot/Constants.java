@@ -76,8 +76,11 @@ public final class Constants {
 
     public static int kPigeonGyro = 14;
 
-
     public static boolean kGyroReversed = false;
+
+    public static double kAutoTargettinP = 1;
+    public static double kAutoTargettinI = 0;
+    public static double kAutoTargettinD = 0;
   }
 
 

@@ -32,11 +32,11 @@ public class Shooter {
         m_rotatingController.setTolerance(ShooterConstants.kShooterTolerance);
     }
 
-    private double getAngleRadians() {
+    public double getAngleRadians() {
         return m_rotatingEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI;
     }
 
-    private double getAngleDegrees() {
+    public double getAngleDegrees() {
         return m_rotatingEncoder.getAbsolutePosition().getValueAsDouble() * 360;
     }
 

@@ -34,7 +34,9 @@ public final class Constants {
     public static double kShootingRotatingI = 0;
     public static double kShootingRotatingD = 0;
     public static int kShootingRotatingCanId = 9;
-    public static int kShootingCanId = 10;
+    public static int kShooterIntakeCanId = 13;
+    public static int kShootingLeftCanId = 10;
+    public static int kShootingRightCanId = 15;
     public static double kShooterTolerance = 2; // in degrees
     public static int kShooterRotatingEncoderCanId = 11;
     public static double kDefaultShooterPosition = -20; // in degrees

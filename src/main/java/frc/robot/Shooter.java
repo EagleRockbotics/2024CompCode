@@ -12,23 +12,29 @@ import frc.robot.Constants.RobotConstants;
 
 
 public class Shooter {
-    private final CANSparkMax m_shootingMotor;
+    private final CANSparkMax m_shootingMotorLeft;
+    private final CANSparkMax m_shootingMotorRight;
     private final CANSparkMax m_rotatingMotor;
+    private final CANSparkMax m_intakeMotor;
     private final CANcoder m_rotatingEncoder;
     private final PIDController m_rotatingController;
     private final Timer m_timer = new Timer();
 
-    public Shooter(int shootingMotorCanId, int rotatingMotorCanId, int rotatingEncoderCanId) {
-        m_shootingMotor = new CANSparkMax(shootingMotorCanId, MotorType.kBrushless);
+    public Shooter(int shootingMotorLeftCanId, int shootingMotorRightCanId, int rotatingMotorCanId, int rotatingEncoderCanId, int intakeMotorCanId) {
+        m_shootingMotorLeft = new CANSparkMax(shootingMotorLeftCanId, MotorType.kBrushless);
+        m_shootingMotorRight = new CANSparkMax(shootingMotorRightCanId, MotorType.kBrushless);
         m_rotatingMotor = new CANSparkMax(rotatingMotorCanId, MotorType.kBrushless);
+        m_intakeMotor = new CANSparkMax(intakeMotorCanId, MotorType.kBrushless);
         m_rotatingEncoder = new CANcoder(rotatingEncoderCanId);
         m_rotatingController = new PIDController(ShooterConstants.kShootingRotatingP, ShooterConstants.kShootingRotatingI, ShooterConstants.kShootingRotatingD);
         m_rotatingController.setTolerance(ShooterConstants.kShooterTolerance);
     }
 
     public Shooter() {
-        m_shootingMotor = new CANSparkMax(ShooterConstants.kShootingCanId, MotorType.kBrushless);
+        m_shootingMotorLeft = new CANSparkMax(ShooterConstants.kShootingLeftCanId, MotorType.kBrushless);
+        m_shootingMotorRight = new CANSparkMax(ShooterConstants.kShootingRightCanId, MotorType.kBrushless);
         m_rotatingMotor = new CANSparkMax(ShooterConstants.kShootingRotatingCanId, MotorType.kBrushless);
+        m_intakeMotor = new CANSparkMax(ShooterConstants.kShooterIntakeCanId, MotorType.kBrushless);
         m_rotatingEncoder = new CANcoder(ShooterConstants.kShooterRotatingEncoderCanId);
         m_rotatingController = new PIDController(ShooterConstants.kShootingRotatingP, ShooterConstants.kShootingRotatingI, ShooterConstants.kShootingRotatingD);
         m_rotatingController.setTolerance(ShooterConstants.kShooterTolerance);
@@ -63,14 +69,16 @@ public class Shooter {
             m_timer.start();
             double angle = calculateAngle(distanceFromTarget);
             setAngle(angle);
-            m_shootingMotor.set(1);
+            m_shootingMotorLeft.set(1);
+            m_shootingMotorRight.set(-1);
             if (m_timer.get() > 4) {
                 // run intake into shooter. This function may be moved into a class containing both the shooter and intake systems
             }
         } else {
             m_timer.stop();
             m_timer.reset();
-            m_shootingMotor.set(0);
+            m_shootingMotorLeft.set(0);
+            m_shootingMotorRight.set(0);
             setAngle(ShooterConstants.kDefaultShooterPosition);
         }
     }

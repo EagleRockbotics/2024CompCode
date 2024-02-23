@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -20,12 +21,13 @@ public class Shooter {
     private final PIDController m_rotatingController;
     private final Timer m_timer = new Timer();
     private final Timer m_timer2 = new Timer();
+    private final DigitalInput m_limitSwitch;
     // the current command being run
     private String m_currentCommand = ShooterConstants.kRest;
     // the current distance from target, should be continually updated if possible
     private double m_disFromTarget = 0;
 
-    public Shooter(int shootingMotorLeftCanId, int shootingMotorRightCanId, int rotatingMotorCanId, int rotatingEncoderCanId, int intakeMotorCanId) {
+    public Shooter(int shootingMotorLeftCanId, int shootingMotorRightCanId, int rotatingMotorCanId, int rotatingEncoderCanId, int intakeMotorCanId, int LimitSwitchPort) {
         m_shootingMotorLeft = new CANSparkMax(shootingMotorLeftCanId, MotorType.kBrushless);
         m_shootingMotorRight = new CANSparkMax(shootingMotorRightCanId, MotorType.kBrushless);
         m_rotatingMotor = new CANSparkMax(rotatingMotorCanId, MotorType.kBrushless);
@@ -33,6 +35,7 @@ public class Shooter {
         m_rotatingEncoder = new CANcoder(rotatingEncoderCanId);
         m_rotatingController = new PIDController(ShooterConstants.kShootingRotatingP, ShooterConstants.kShootingRotatingI, ShooterConstants.kShootingRotatingD);
         m_rotatingController.setTolerance(ShooterConstants.kShooterTolerance);
+        m_limitSwitch = new DigitalInput(LimitSwitchPort);
     }
 
     public Shooter() {
@@ -43,6 +46,7 @@ public class Shooter {
         m_rotatingEncoder = new CANcoder(ShooterConstants.kShooterRotatingEncoderCanId);
         m_rotatingController = new PIDController(ShooterConstants.kShootingRotatingP, ShooterConstants.kShootingRotatingI, ShooterConstants.kShootingRotatingD);
         m_rotatingController.setTolerance(ShooterConstants.kShooterTolerance);
+        m_limitSwitch = new DigitalInput(ShooterConstants.kLimitSwitchPort);
     }
 
     public double getAngleRadians() {
@@ -102,18 +106,44 @@ public class Shooter {
                 m_intakeMotor.set(0);
             }
         } else if (m_currentCommand == ShooterConstants.kLoadShooter) {
-            m_timer.start();
-            if (m_timer.get() < .5) {
+            m_shootingMotorLeft.set(0);
+            m_shootingMotorRight.set(0);
+            setAngle(ShooterConstants.kLoadShooterPosition);
+            if (!m_limitSwitch.get()) {
                 m_intakeMotor.set(.2);
             } else {
                 m_intakeMotor.set(0);
                 setCommand(ShooterConstants.kRest);
+                // m_intakeMotor.set(.2);
+                // setCommand("loadShooter2");
             }
-        } else {
+        } // else if (m_currentCommand == "loadShooter2") {
+        //     m_shootingMotorLeft.set(0);
+        //     m_shootingMotorRight.set(0);
+        //     setAngle(ShooterConstants.kLoadShooterPosition);
+        //     m_timer.start();
+        //     if (m_timer.get() < 2) {
+        //         m_intakeMotor.
+        //     }
+        // }
+        else if (m_currentCommand == ShooterConstants.kClimbShooter) {
+            m_timer.stop();
+            m_timer.reset();
+            m_timer2.stop();
+            m_timer2.reset();
             m_shootingMotorLeft.set(0);
             m_shootingMotorRight.set(0);
             m_intakeMotor.set(0);
-            setAngle(ShooterConstants.kDefaultShooterPosition);
+            setAngle(ShooterConstants.kClimbingShooterPosition);
+        } else {
+            m_timer.stop();
+            m_timer.reset();
+            m_timer2.stop();
+            m_timer2.reset();
+            m_shootingMotorLeft.set(0);
+            m_shootingMotorRight.set(0);
+            m_intakeMotor.set(0);
+            setAngle(ShooterConstants.kLoadShooterPosition);
         }
     }
 }

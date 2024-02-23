@@ -51,10 +51,13 @@ public final class Constants {
     public static int kShooterIntakeCanId = 13;
     public static int kShootingLeftCanId = 10;
     public static int kShootingRightCanId = 15;
+    public static int kLimitSwitchPort = 1;
     public static double kShooterTolerance = 2; // in degrees
     public static int kShooterRotatingEncoderCanId = 11;
-    public static double kDefaultShooterPosition = -20; // in degrees
+    public static double kLoadShooterPosition = 0; // in degrees
+    public static double kClimbingShooterPosition = 25; // in degrees
     public static String kLoadShooter = "load";
+    public static String kClimbShooter = "climb";
     public static String kFireShooter = "shoot";
     public static String kRest = "rest";
   }

@@ -33,10 +33,10 @@ public final class Constants {
     public static int kLeftElevatorCanID = 21;
     public static int kRightElevatorEncoderCanId = 22;
     public static int kLeftElevatorEncoderCanId = 23;
-    public static int kElevatorP = 1;
-    public static int kElevatorI = 0;
-    public static int kElevatorD = 0;
-    public static int kElevatorMaxHeight = 500;
+    public static double kElevatorP = 1;
+    public static double kElevatorI = 0;
+    public static double kElevatorD = 0;
+    public static double kElevatorMaxHeight = 500;
     public static String kElevatorIdle = "idle";
     public static String kElevatorMax = "max";
     public static String kElevatorMin = "min";

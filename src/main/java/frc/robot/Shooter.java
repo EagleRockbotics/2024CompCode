@@ -68,6 +68,10 @@ public class Shooter {
      */
     public void setCommand(String command) {
         m_currentCommand = command;
+        m_timer.stop();
+        m_timer.reset();
+        m_timer2.stop();
+        m_timer2.reset();
     }
 
     /**
@@ -106,10 +110,6 @@ public class Shooter {
                 setCommand(ShooterConstants.kDefault);
             }
         } else {
-            m_timer.stop();
-            m_timer2.stop();
-            m_timer.reset();
-            m_timer2.reset();
             m_shootingMotorLeft.set(0);
             m_shootingMotorRight.set(0);
             m_intakeMotor.set(0);

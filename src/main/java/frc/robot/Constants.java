@@ -32,8 +32,14 @@ public final class Constants {
     public static int kPitchMotorCanId = 25;
     public static int kIntakeMotorCanId = 26;
     public static int kPitchEncoderCanId = 27;
+    public static int kLimitSwitchPort = 0;
     public static double kPitchLow = 0;
     public static double kPitchHigh = 500;
+    public static String kLoadShooter = "intake";
+    public static String kIdle = "idle";
+    public static double kPitchP = 1;
+    public static double kPitchI = 0;
+    public static double kPitchD = 0;
   }
 
   public static class ControllerConstants {

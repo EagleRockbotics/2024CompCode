@@ -43,7 +43,6 @@ public final class Constants {
     public static double kPitchD = 0;
   }
 
-
   public static class ShooterConstants {
     public static double kShootingRotatingP = 1;
     public static double kShootingRotatingI = 0;

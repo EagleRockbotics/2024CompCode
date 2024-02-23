@@ -10,7 +10,7 @@ public class Elevator {
     private final WPI_TalonSRX m_RightElevator;
     private final CANcoder m_LeftCanCoder;
     private final CANcoder m_RightCanCoder;
-    private String m_CurrentCommand = "idle";
+    private String m_CurrentCommand = ElevatorConstants.kElevatorIdle;
 
     /**
      * Constructor using constants in constants file

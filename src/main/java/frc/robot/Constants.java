@@ -42,7 +42,7 @@ public final class Constants {
     public static double kDefaultShooterPosition = -20; // in degrees
     public static String kLoadShooter = "load";
     public static String kFireShooter = "shoot";
-    public static String kDefault = "rest";
+    public static String kRest = "rest";
   }
 
   public static class FieldConstants {

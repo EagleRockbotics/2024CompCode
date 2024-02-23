@@ -21,7 +21,7 @@ public class Shooter {
     private final Timer m_timer = new Timer();
     private final Timer m_timer2 = new Timer();
     // the current command being run
-    private String m_currentCommand = "rest";
+    private String m_currentCommand = ShooterConstants.kRest;
     // the current distance from target, should be continually updated if possible
     private double m_disFromTarget = 0;
 
@@ -85,8 +85,8 @@ public class Shooter {
     /**
      * Runs the shooter. This function should be called every loop. Use the setCommand function and the setDistance for shooting and loading the shooter
      */
-    public void runShooter() {
-        if (m_currentCommand == "shoot") {
+    public void periodic() {
+        if (m_currentCommand == ShooterConstants.kFireShooter) {
             m_timer.start();
             double angle = calculateAngle(m_disFromTarget);
             setAngle(angle);
@@ -96,18 +96,18 @@ public class Shooter {
                 m_timer2.start();
                 m_intakeMotor.set(.2);
                 if (m_timer2.get() > 2) {
-                    setCommand(ShooterConstants.kDefault);
+                    setCommand(ShooterConstants.kRest);
                 }
             } else {
                 m_intakeMotor.set(0);
             }
-        } else if (m_currentCommand == "load") {
+        } else if (m_currentCommand == ShooterConstants.kLoadShooter) {
             m_timer.start();
             if (m_timer.get() < .5) {
                 m_intakeMotor.set(.2);
             } else {
                 m_intakeMotor.set(0);
-                setCommand(ShooterConstants.kDefault);
+                setCommand(ShooterConstants.kRest);
             }
         } else {
             m_shootingMotorLeft.set(0);

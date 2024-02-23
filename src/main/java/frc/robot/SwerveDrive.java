@@ -84,7 +84,8 @@ public class SwerveDrive implements Subsystem {
                 }, this);
         SmartDashboard.putData("Field View", m_field2d);
 
-        autoTargetingController = new PIDController(DriveConstants.kAutoTargettinP, DriveConstants.kAutoTargettinI, DriveConstants.kAutoTargettinD);
+        autoTargetingController = new PIDController(DriveConstants.kAutoTargettinP, DriveConstants.kAutoTargettinI,
+                DriveConstants.kAutoTargettinD);
     }
 
     public void publishStates() {
@@ -134,6 +135,9 @@ public class SwerveDrive implements Subsystem {
 
     }
 
+    /**
+     * Locks wheels in place
+     */
     public void setX() {
         m_FLSwerve.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(50)));
         m_FRSwerve.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
@@ -141,15 +145,23 @@ public class SwerveDrive implements Subsystem {
         m_RRSwerve.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
     }
 
+    /**
+     * Command for driving relative to field
+     */
     public void driveFieldRelative(double xSpeed, double ySpeed, double rot) {
         SmartDashboard.putNumber("Gyro Position", m_gyro.getAngle() / 180 * Math.PI);
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed, ySpeed, rot,
-                Rotation2d.fromRadians((m_gyro.getAngle()+90) * Math.PI / 180));
+                Rotation2d.fromRadians((m_gyro.getAngle() + 90) * Math.PI / 180));
         SmartDashboard.putNumber("gyro", m_gyro.getAngle());
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(moduleStates);
     }
 
+    /**
+     * Command for driving relative to robot
+     * 
+     * @param speeds
+     */
     public void driveRobotRelative(ChassisSpeeds speeds) {
         SmartDashboard.putNumber("gyro", m_gyro.getAngle());
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
@@ -163,6 +175,9 @@ public class SwerveDrive implements Subsystem {
         m_RRSwerve.testModule(angle, speed);
     }
 
+    /**
+     * Stops wheels from moving
+     */
     public void stopModules() {
         m_FRSwerve.stopModule();
         m_FLSwerve.stopModule();
@@ -176,19 +191,19 @@ public class SwerveDrive implements Subsystem {
 
     public SwerveModulePosition[] getModulePositions() {
         return new SwerveModulePosition[] {
-                m_FLSwerve.getPosition(),
-                m_FRSwerve.getPosition(),
-                m_RLSwerve.getPosition(),
-                m_RRSwerve.getPosition()
+            m_FLSwerve.getPosition(),
+            m_FRSwerve.getPosition(),
+            m_RLSwerve.getPosition(),
+            m_RRSwerve.getPosition()
         };
     }
 
     public SwerveModuleState[] getModuleStates() {
         return new SwerveModuleState[] {
-                m_FLSwerve.getState(),
-                m_FRSwerve.getState(),
-                m_RLSwerve.getState(),
-                m_RRSwerve.getState(),
+            m_FLSwerve.getState(),
+            m_FRSwerve.getState(),
+            m_RLSwerve.getState(),
+            m_RRSwerve.getState(),
         };
     }
 
@@ -202,6 +217,7 @@ public class SwerveDrive implements Subsystem {
 
     /**
      * Converts axis on controller to speeds
+     * 
      * @param xAxis the x axis of the controller
      * @param yAxis the y axis of the controller
      * @param zAxis the z axis of the controller
@@ -217,7 +233,7 @@ public class SwerveDrive implements Subsystem {
         // apply deadzones
         if (Math.abs(zAxis) <= ControllerConstants.kSteerDeadzone) {
             XYRotValues[2] = 0;
-        } 
+        }
         if (Math.abs(yAxis) <= ControllerConstants.kDriveDeadzone) {
             XYRotValues[1] = 0;
         }
@@ -234,12 +250,14 @@ public class SwerveDrive implements Subsystem {
 
     /**
      * Function for autoAiming towards a tag
-     * @param angleToTag the angle between the robot's current rotation and the degree position
+     * 
+     * @param angleToTag the angle between the robot's current rotation and the
+     *                   degree position
      * @return returns a new rot value
      */
     public double AutoTargeter(double angleToTag) {
         if (angleToTag > 899) {
-            return Math.PI/2;
+            return Math.PI / 2;
         }
         return autoTargetingController.calculate(angleToTag);
     }

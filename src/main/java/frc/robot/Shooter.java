@@ -68,7 +68,7 @@ public class Shooter {
 
     /**
      * Sets the current running command for the shooter
-     * @param command What command to run. Should be ShooterConstants.(kLoadShooter, kFireShooter, kDefault)
+     * @param command What command to run. Should be ShooterConstants.(kLoadShooter, kFireShooter, kDefault). If setting command to kFireShooter, make sure that the robot is pointed at the target.
      */
     public void setCommand(String command) {
         m_currentCommand = command;

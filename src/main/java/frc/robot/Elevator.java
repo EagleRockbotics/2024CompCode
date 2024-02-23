@@ -57,9 +57,9 @@ public class Elevator {
      * Function to call every loop
      */
     public void periodic() {
-        if (m_CurrentCommand == "min") {
+        if (m_CurrentCommand == ElevatorConstants.kElevatorMin) {
             setMinHeight();
-        } else if (m_CurrentCommand == "max") {
+        } else if (m_CurrentCommand == ElevatorConstants.kElevatorMax) {
             setMaxHeight();
         } else {
             idle();

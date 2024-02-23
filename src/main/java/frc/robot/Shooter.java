@@ -6,9 +6,9 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 
+import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.FieldConstants;
-import frc.robot.Constants.RobotConstants;
 
 
 public class Shooter {

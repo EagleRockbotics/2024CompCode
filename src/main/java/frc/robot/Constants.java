@@ -58,7 +58,7 @@ public final class Constants {
     public static double kClimbingShooterPosition = 25; // in degrees
     public static String kLoadShooter = "load";
     public static String kClimbShooter = "climb";
-    public static String kFireShooter = "shoot";
+    public static String kFireShooterSpeaker = "shoot";
     public static String kRest = "rest";
   }
 

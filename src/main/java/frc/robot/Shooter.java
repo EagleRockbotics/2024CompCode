@@ -90,7 +90,7 @@ public class Shooter {
      * Runs the shooter. This function should be called every loop. Use the setCommand function and the setDistance for shooting and loading the shooter
      */
     public void periodic() {
-        if (m_currentCommand == ShooterConstants.kFireShooter) {
+        if (m_currentCommand == ShooterConstants.kFireShooterSpeaker) {
             m_timer.start();
             double angle = calculateAngle(m_disFromTarget);
             setAngle(angle);

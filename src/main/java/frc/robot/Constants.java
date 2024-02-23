@@ -27,6 +27,21 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static class ElevatorConstants {
+    public static int kRightElevatorCanID = 20;
+    public static int kLeftElevatorCanID = 21;
+    public static int kRightElevatorEncoderCanId = 22;
+    public static int kLeftElevatorEncoderCanId = 23;
+    public static int kElevatorP = 1;
+    public static int kElevatorI = 0;
+    public static int kElevatorD = 0;
+    public static int kElevatorMaxHeight = 500;
+    public static String kElevatorIdle = "idle";
+    public static String kElevatorMax = "max";
+    public static String kElevatorMin = "min";
+  }
+
   public static class ControllerConstants {
     public static int kDrivingJoystickPort = 0;
     public static int kDrivingJoystickX = 1;

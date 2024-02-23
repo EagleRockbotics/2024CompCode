@@ -27,6 +27,15 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static class IntakeConstants {
+    public static int kPitchMotorCanId = 25;
+    public static int kIntakeMotorCanId = 26;
+    public static int kPitchEncoderCanId = 27;
+    public static double kPitchLow = 0;
+    public static double kPitchHigh = 500;
+  }
+
   public static class ControllerConstants {
     public static int kDrivingJoystickPort = 0;
     public static int kDrivingJoystickX = 1;

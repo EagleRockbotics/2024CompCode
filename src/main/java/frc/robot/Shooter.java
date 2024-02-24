@@ -6,7 +6,6 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.math.controller.ArmFeedforward;
 
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -20,7 +19,6 @@ public class Shooter {
     private final CANSparkMax m_intakeMotor;
     private final CANcoder m_rotatingEncoder;
     private final PIDController m_rotatingController;
-    private final ArmFeedforward m_feedForward;
     private final Timer m_timer = new Timer();
     private final Timer m_timer2 = new Timer();
     private final DigitalInput m_limitSwitch;
@@ -53,7 +51,6 @@ public class Shooter {
         m_rotatingController = new PIDController(ShooterConstants.kShootingRotatingP, ShooterConstants.kShootingRotatingI, ShooterConstants.kShootingRotatingD);
         m_rotatingController.setTolerance(ShooterConstants.kShooterTolerance);
         m_limitSwitch = new DigitalInput(ShooterConstants.kLimitSwitchPort);
-        m_feedForward = new ArmFeedforward(ShooterConstants.kShootingKS, ShooterConstants.kShootingKG, ShooterConstants.kShootingKV);
     }
 
     public double getAngleRadians() {
@@ -65,7 +62,11 @@ public class Shooter {
     }
 
     private void setAngle(double targetAngle) {
-        m_rotatingMotor.set(m_rotatingController.calculate(targetAngle, getAngleRadians()) + m_feedForward.calculate(getAngleRadians(), targetAngle));
+        if (targetAngle > Math.PI/2) {
+            targetAngle = Math.PI/2;
+        }
+        double cosineScalar = Math.cos(getAngleRadians());
+        m_rotatingMotor.set(m_rotatingController.calculate(targetAngle, getAngleRadians()) + ShooterConstants.kShootingKG * cosineScalar);
     }
 
     private double calculateAngle(double distanceFromTarget) {

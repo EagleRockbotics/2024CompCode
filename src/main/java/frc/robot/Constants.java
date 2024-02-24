@@ -47,9 +47,7 @@ public final class Constants {
     public static double kShootingRotatingP = 1;
     public static double kShootingRotatingI = 0;
     public static double kShootingRotatingD = 0;
-    public static double kShootingKS = 1;
-    public static double kShootingKG = 1;
-    public static double kShootingKV = 1;
+    public static double kShootingKG = 0.07; // power needed to keep motor steay when facing straight out
     public static int kShootingRotatingCanId = 9;
     public static int kShooterIntakeCanId = 13;
     public static int kShootingLeftCanId = 10;

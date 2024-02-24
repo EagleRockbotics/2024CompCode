@@ -38,13 +38,13 @@ public final class Constants {
     public static double kPitchHigh = 50 * Math.PI / 180; // in radians
     public static String kLoadShooter = "intake";
     public static String kIdle = "idle";
-    public static double kPitchP = 1;
+    public static double kPitchP = 0;
     public static double kPitchI = 0;
     public static double kPitchD = 0;
   }
 
   public static class ShooterConstants {
-    public static double kShootingRotatingP = 1;
+    public static double kShootingRotatingP = 0;
     public static double kShootingRotatingI = 0;
     public static double kShootingRotatingD = 0;
     public static double kShootingKG = 0.07; // power needed to keep motor steay when facing straight out

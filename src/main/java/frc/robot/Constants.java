@@ -35,12 +35,13 @@ public final class Constants {
     public static int kPitchEncoderCanId = 27;
     public static int kLimitSwitchPort = 0;
     public static double kPitchLow = -25 * Math.PI / 180; // in radians
-    public static double kPitchHigh = 50 * Math.PI / 180; // in radians
+    public static double kPitchHigh = 130 * Math.PI / 180; // in radians
     public static String kLoadShooter = "intake";
     public static String kIdle = "idle";
     public static double kPitchP = 0;
     public static double kPitchI = 0;
     public static double kPitchD = 0;
+    public static double kPitchKG = .07;
   }
 
   public static class ShooterConstants {

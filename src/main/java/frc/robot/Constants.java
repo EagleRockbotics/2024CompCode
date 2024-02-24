@@ -62,6 +62,7 @@ public final class Constants {
     public static String kClimbShooter = "climb";
     public static String kFireShooterSpeaker = "shoot";
     public static String kRest = "rest";
+    public static double kShooterEncoderRatio = 2/3;
   }
 
   public static class FieldConstants {

@@ -54,11 +54,11 @@ public class Shooter {
     }
 
     public double getAngleRadians() {
-        return m_rotatingEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI;
+        return m_rotatingEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI * ShooterConstants.kShooterEncoderRatio;
     }
 
     public double getAngleDegrees() {
-        return m_rotatingEncoder.getAbsolutePosition().getValueAsDouble() * 360;
+        return m_rotatingEncoder.getAbsolutePosition().getValueAsDouble() * 360 * ShooterConstants.kShooterEncoderRatio;
     }
 
     private void setAngle(double targetAngle) {

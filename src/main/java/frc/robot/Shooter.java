@@ -100,18 +100,16 @@ public class Shooter {
     public void periodic() {
         if (m_currentCommand == ShooterConstants.kFireShooterSpeaker) {
             m_timer.start();
-            double angle = calculateAngle(m_disFromTarget);
-            setAngle(angle);
+            setAngle(calculateAngle(m_disFromTarget));
             m_shootingMotorLeft.set(1);
             m_shootingMotorRight.set(-1);
+            m_intakeMotor.set(0);
             if (m_timer.get() > 4) {
                 m_timer2.start();
                 m_intakeMotor.set(.2);
                 if (m_timer2.get() > 2) {
                     setCommand(ShooterConstants.kRest);
                 }
-            } else {
-                m_intakeMotor.set(0);
             }
         } else if (m_currentCommand == ShooterConstants.kLoadShooter) {
             m_shootingMotorLeft.set(0);

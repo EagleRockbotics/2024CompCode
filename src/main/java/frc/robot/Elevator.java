@@ -11,7 +11,8 @@ public class Elevator {
     private final CANcoder m_LeftCanCoder;
     private final CANcoder m_RightCanCoder;
     private String m_CurrentCommand = ElevatorConstants.kElevatorIdle;
-    private double m_elevatorSpeed = 0;
+    private double m_elevatorSpeedLeft = 0;
+    private double m_elevatorSpeedRight = 0;
 
     /**
      * Constructor using constants in constants file
@@ -38,20 +39,28 @@ public class Elevator {
 
     private void setMinHeight() {
         if (m_LeftCanCoder.getPosition().getValueAsDouble() < 0) {
-            m_LeftElevator.set(-1);
+            m_LeftElevator.set(1);
         } else {
             m_LeftElevator.set(0);
         }
         if (m_RightCanCoder.getPosition().getValueAsDouble() < 0) {
-            m_RightElevator.set(-1);
+            m_RightElevator.set(1);
         } else {
             m_RightElevator.set(0);
         }
     }
 
-    private void manual(double speed) {
-        m_LeftElevator.set(Math.abs(speed));
-        m_RightElevator.set(Math.abs(speed));
+    private void manual(double leftSpeed, double rightSpeed) {
+        if (m_LeftCanCoder.getPosition().getValueAsDouble() < 0) {
+            m_LeftElevator.set(leftSpeed);
+        } else {
+            m_LeftElevator.set(0);
+        }
+        if (m_RightCanCoder.getPosition().getValueAsDouble() < 0) {
+            m_RightElevator.set(rightSpeed);
+        } else {
+            m_RightElevator.set(0);
+        }
     }
 
     private void idle() {
@@ -63,8 +72,9 @@ public class Elevator {
      * Sets the speed of the elevator for manual control
      * @param speed the speed of the elevator going down, from 0 to 1
      */
-    public void setElevatorSpeed(double speed) {
-        m_elevatorSpeed = speed;
+    public void setElevatorSpeed(double leftSpeed, double rightSpeed) {
+        m_elevatorSpeedLeft = leftSpeed;
+        m_elevatorSpeedRight = rightSpeed;
     }
 
     /**
@@ -76,7 +86,7 @@ public class Elevator {
         } else if (m_CurrentCommand == ElevatorConstants.kReturn) {
             setMaxHeight();
         } else if (m_CurrentCommand == ElevatorConstants.kElevatorManual) {
-            manual(m_elevatorSpeed);
+            manual(m_elevatorSpeedLeft, m_elevatorSpeedRight);
         } else {
             idle();
         }

@@ -37,9 +37,11 @@ public final class Constants {
     public static double kElevatorI = 0;
     public static double kElevatorD = 0;
     public static double kElevatorMaxHeight = 500;
+    public static double kElevatorDownHeight = 1000;
     public static String kElevatorIdle = "idle";
-    public static String kElevatorMax = "max";
-    public static String kElevatorMin = "min";
+    public static String kRelease = "max";
+    public static String kReturn = "min";
+    public static String kElevatorManual = "manual";
   }
 
   public static class ControllerConstants {

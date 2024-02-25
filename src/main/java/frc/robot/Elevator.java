@@ -11,6 +11,7 @@ public class Elevator {
     private final CANcoder m_LeftCanCoder;
     private final CANcoder m_RightCanCoder;
     private String m_CurrentCommand = ElevatorConstants.kElevatorIdle;
+    private double m_elevatorSpeed = 0;
 
     /**
      * Constructor using constants in constants file
@@ -23,12 +24,12 @@ public class Elevator {
     }
 
     private void setMaxHeight() {
-        if (m_LeftCanCoder.getAbsolutePosition().getValueAsDouble() < ElevatorConstants.kElevatorMaxHeight) {
+        if (m_LeftCanCoder.getPosition().getValueAsDouble() < ElevatorConstants.kElevatorMaxHeight) {
             m_LeftElevator.set(1);
         } else {
             m_LeftElevator.set(0);
         }
-        if (m_RightCanCoder.getAbsolutePosition().getValueAsDouble() < ElevatorConstants.kElevatorMaxHeight) {
+        if (m_RightCanCoder.getPosition().getValueAsDouble() < ElevatorConstants.kElevatorDownHeight) {
             m_RightElevator.set(1);
         } else {
             m_RightElevator.set(0);
@@ -36,16 +37,21 @@ public class Elevator {
     }
 
     private void setMinHeight() {
-        if (m_LeftCanCoder.getAbsolutePosition().getValueAsDouble() > 0) {
+        if (m_LeftCanCoder.getPosition().getValueAsDouble() < 0) {
             m_LeftElevator.set(-1);
         } else {
             m_LeftElevator.set(0);
         }
-        if (m_RightCanCoder.getAbsolutePosition().getValueAsDouble() > 0) {
+        if (m_RightCanCoder.getPosition().getValueAsDouble() < 0) {
             m_RightElevator.set(-1);
         } else {
             m_RightElevator.set(0);
         }
+    }
+
+    private void manual(double speed) {
+        m_LeftElevator.set(Math.abs(speed));
+        m_RightElevator.set(Math.abs(speed));
     }
 
     private void idle() {
@@ -54,13 +60,23 @@ public class Elevator {
     }
 
     /**
+     * Sets the speed of the elevator for manual control
+     * @param speed the speed of the elevator going down, from 0 to 1
+     */
+    public void setElevatorSpeed(double speed) {
+        m_elevatorSpeed = speed;
+    }
+
+    /**
      * Function to call every loop
      */
     public void periodic() {
-        if (m_CurrentCommand == ElevatorConstants.kElevatorMin) {
+        if (m_CurrentCommand == ElevatorConstants.kRelease) {
             setMinHeight();
-        } else if (m_CurrentCommand == ElevatorConstants.kElevatorMax) {
+        } else if (m_CurrentCommand == ElevatorConstants.kReturn) {
             setMaxHeight();
+        } else if (m_CurrentCommand == ElevatorConstants.kElevatorManual) {
+            manual(m_elevatorSpeed);
         } else {
             idle();
         }

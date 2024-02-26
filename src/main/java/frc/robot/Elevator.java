@@ -99,4 +99,12 @@ public class Elevator {
     public void changeCommand(String newCommand) {
         m_CurrentCommand = newCommand;
     }
+
+    /**
+     * Function to be called on teleop init
+     */
+    public void teleopInit() {
+        m_LeftCanCoder.setPosition(0);
+        m_RightCanCoder.setPosition(0);
+    }
 }

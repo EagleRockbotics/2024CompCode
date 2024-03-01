@@ -24,6 +24,11 @@ public class Elevator {
         m_RightCanCoder = new CANcoder(ElevatorConstants.kRightElevatorEncoderCanId);
     }
 
+    public double[] getPositions() {
+        double[] positions = {m_LeftCanCoder.getPosition().getValueAsDouble(), m_RightCanCoder.getPosition().getValueAsDouble()};
+        return positions;
+    }
+
     private void setMaxHeight() {
         if (m_LeftCanCoder.getPosition().getValueAsDouble() < ElevatorConstants.kElevatorMaxHeight) {
             m_LeftElevator.set(1);
@@ -61,6 +66,11 @@ public class Elevator {
         } else {
             m_RightElevator.set(0);
         }
+    }
+
+    public void HuenemeComp(double leftSpeed, double rightSpeed) {
+        m_LeftElevator.set(leftSpeed);
+        m_RightElevator.set(-rightSpeed);
     }
 
     private void idle() {

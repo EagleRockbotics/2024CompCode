@@ -40,6 +40,8 @@ public class Robot extends TimedRobot {
   private static Joystick m_DriveStick;
   private static Joystick m_HelperStick;
 
+  private static Elevator m_elevator;
+
   private static SendableChooser<Command> autoChooser;
   private static Command m_autonomousCommand;
 
@@ -59,7 +61,7 @@ public class Robot extends TimedRobot {
      SmartDashboard.putData(autoChooser);
     m_DriveStick = new Joystick(ControllerConstants.kDrivingJoystickPort);
     m_HelperStick = new Joystick(ControllerConstants.kHelperJoystickPort);
-
+    m_elevator = new Elevator();
   }
 
   /**
@@ -75,7 +77,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-
+    SmartDashboard.putNumber("DriverStickTest", m_DriveStick.getRawAxis(0));
     
   }
 
@@ -103,47 +105,49 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    m_elevator.changeCommand(ElevatorConstants.kElevatorIdle);
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-   
-  
+    m_elevator.periodic();
   }
 
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    //m_HelperStick.setRumble(RumbleType.kBothRumble, 1);
+    //m_DriveStick.setRumble(RumbleType.kBothRumble, 1);
     m_swerveDrive.m_gyro.reset();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
+    m_elevator.teleopInit();
+    m_elevator.changeCommand(ElevatorConstants.kElevatorManual);
   }
 
   /** This function is called periodically during operator control. */
   //Gyro angle was off by 90 degrees, sticks inverted incorrectly, and RobotRelative works better than field relative with no known downsides
   @Override
   public void teleopPeriodic() {
-    var xDriveSpeed = -m_HelperStick.getRawAxis(0) * ControllerConstants.kDrivingSpeed;
-    var yDriveSpeed = m_HelperStick.getRawAxis(1) * ControllerConstants.kDrivingSpeed;
-    var rotDriveSpeed = -m_HelperStick.getRawAxis(4) * Math.PI * ControllerConstants.kSteerSpeed;
+    var xDriveSpeed = -m_DriveStick.getRawAxis(0) * ControllerConstants.kDrivingSpeed;
+    var yDriveSpeed = m_DriveStick.getRawAxis(1) * ControllerConstants.kDrivingSpeed;
+    var rotDriveSpeed = -m_DriveStick.getRawAxis(4) * Math.PI * ControllerConstants.kSteerSpeed;
 
-    if(m_HelperStick.getRawButtonReleased(5)) {
+    if(m_DriveStick.getRawButtonReleased(5)) {
       m_swerveDrive.zeroHeading();
     }
 
-    if (Math.abs(m_HelperStick.getRawAxis(4)) <= ControllerConstants.kSteerDeadzone) {
+    if (Math.abs(m_DriveStick.getRawAxis(4)) <= ControllerConstants.kSteerDeadzone) {
       rotDriveSpeed = 0;
     } 
 
-    if (Math.abs(m_HelperStick.getRawAxis(1)) <= ControllerConstants.kDriveDeadzone) {
+    if (Math.abs(m_DriveStick.getRawAxis(1)) <= ControllerConstants.kDriveDeadzone) {
       yDriveSpeed = 0;
     }
 
-    if (Math.abs(m_HelperStick.getRawAxis(0)) <= ControllerConstants.kDriveDeadzone) {
+    if (Math.abs(m_DriveStick.getRawAxis(0)) <= ControllerConstants.kDriveDeadzone) {
       xDriveSpeed = 0;
     }
 
@@ -152,13 +156,13 @@ public class Robot extends TimedRobot {
         yDriveSpeed,
         rotDriveSpeed);
 
-   
+    m_elevator.HuenemeComp(m_HelperStick.getRawAxis(2), m_HelperStick.getRawAxis(3));
   }
 
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
-    m_HelperStick.setRumble(RumbleType.kBothRumble, 0);
+    m_DriveStick.setRumble(RumbleType.kBothRumble, 0);
     if (m_autonomousCommand != null) { 
       m_autonomousCommand.cancel();
     }
@@ -173,6 +177,8 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {
     SmartDashboard.putData("Limelight Field", limelightField);
+    m_elevator.teleopInit();
+    m_elevator.changeCommand(ElevatorConstants.kElevatorManual);
   }
 
   /** This function is called periodically during test mode. */
@@ -185,6 +191,10 @@ public class Robot extends TimedRobot {
 
     try { limelightField.setRobotPose(m_visionSystem.getRobotPose(Rotation2d.fromDegrees(0)).get(0)); } catch (Exception e) {}
     
+    m_elevator.HuenemeComp(m_HelperStick.getRawAxis(5), m_HelperStick.getRawAxis(6));
+    // SmartDashboard.putNumber("Right Elevator Position", m_elevator.getPositions()[0]);
+    // SmartDashboard.putNumber("Left Elevator Position", m_elevator.getPositions()[1]);
+
     // double angle = (Math.atan2(m_DriveStick.getRawAxis(1), m_DriveStick.getRawAxis(0)) * 180 / Math.PI) - 90;
     // double speed = Math.sqrt(Math.pow(m_DriveStick.getRawAxis(1), 2) + Math.pow(m_DriveStick.getRawAxis(0), 2));
     // if (Math.abs(speed) > ModuleConstants.kDeadzone) {

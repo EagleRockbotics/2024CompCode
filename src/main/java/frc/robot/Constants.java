@@ -31,13 +31,10 @@ public final class Constants {
   public static class ElevatorConstants {
     public static int kRightElevatorCanID = 19;
     public static int kLeftElevatorCanID = 17;
-    public static int kRightElevatorEncoderCanId = 22;
-    public static int kLeftElevatorEncoderCanId = 23;
-    public static double kElevatorP = 1;
-    public static double kElevatorI = 0;
-    public static double kElevatorD = 0;
-    public static double kElevatorMaxHeight = 500;
-    public static double kElevatorDownHeight = 1000;
+    public static int kRightElevatorEncoderCanId = 20;
+    public static int kLeftElevatorEncoderCanId = 21;
+    public static double kElevatorMaxHeight = 0;
+    public static double kElevatorDownHeight = 7.9;
     public static String kElevatorIdle = "idle";
     public static String kRelease = "max";
     public static String kReturn = "min";
@@ -45,7 +42,7 @@ public final class Constants {
   }
 
   public static class ControllerConstants {
-    public static int kDrivingJoystickPort = 2;
+    public static int kDrivingJoystickPort = 0;
     public static int kDrivingJoystickX = 1;
     public static int kDrivingJoystickY = 0;
     public static int kDrivingJoystickZ = 2;
@@ -53,7 +50,7 @@ public final class Constants {
     public static double kSteerSpeed = 1;
     public static double kSteerDeadzone = 0.1;
     public static double kDriveDeadzone = 0.1;
-    public static int kHelperJoystickPort = 0;
+    public static int kHelperJoystickPort = 1;
   }
   public static class DriveConstants {
     public static double kMaxSpeedMetersPerSecond = 4.5;

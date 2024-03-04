@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2.0,
+      "x": 1.53188929607321,
       "y": 7.0
     },
-    "rotation": -0.7468793490561736
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Field Exit Top"
+            "pathName": "New Path"
           }
         }
       ]

@@ -103,7 +103,7 @@ public class SwerveModule {
 
     public SwerveModulePosition getPosition() {
         if (!driveReversal) {
-            return new SwerveModulePosition(m_drivingEncoder.getPosition() * ModuleConstants.kWheelCircumferenceMeters,
+            return new SwerveModulePosition(m_drivingEncoder.getPosition() * 2 * ModuleConstants.kWheelCircumferenceMeters,
                     Rotation2d.fromRadians(m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI));
         } else {
             return new SwerveModulePosition(-m_drivingEncoder.getPosition() * ModuleConstants.kWheelCircumferenceMeters,
@@ -144,6 +144,7 @@ public class SwerveModule {
 
         if (driveReversal) {
             m_drivingSparkMax.set(-speed);
+            SmartDashboard.putNumber("speed", speed);
         } else {
             m_drivingSparkMax.set(speed);
         }

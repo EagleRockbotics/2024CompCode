@@ -42,11 +42,11 @@ public final class Constants {
   }
 
   public static class ControllerConstants {
-    public static int kDrivingJoystickPort = 2;
+    public static int kDrivingJoystickPort = 0;
     public static int kDrivingJoystickX = 1;
     public static int kDrivingJoystickY = 0;
     public static int kDrivingJoystickZ = 2;
-    public static double kDrivingSpeed = 0.5;
+    public static double kDrivingSpeed = .75;
     public static double kSteerSpeed = 1;
     public static double kSteerDeadzone = 0.1;
     public static double kDriveDeadzone = 0.1;
@@ -128,7 +128,7 @@ public final class Constants {
 
 
     public static double kDrivingMotorFreeSpeedRps = kFreeSpeedRpm / 60;
-    public static double kWheelDiamaterMeters = .1016;
+    public static double kWheelDiamaterMeters = .1;
     public static double kWheelCircumferenceMeters = kWheelDiamaterMeters * Math.PI;
 
 

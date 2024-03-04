@@ -59,20 +59,20 @@ public class Elevator {
 
     public void manual(double leftSpeed, double rightSpeed) {
         if (m_LeftCanCoder.getPosition().getValueAsDouble() < ElevatorConstants.kElevatorDownHeight) {
-            m_LeftElevator.set(leftSpeed);
+            m_LeftElevator.set(-leftSpeed);
         } else {
             m_LeftElevator.set(0);
         }
         if (m_RightCanCoder.getPosition().getValueAsDouble() > -ElevatorConstants.kElevatorDownHeight) {
-            m_RightElevator.set(-rightSpeed);
+            m_RightElevator.set(rightSpeed);
         } else {
             m_RightElevator.set(0);
         }
     }
 
     public void HuenemeComp(double leftSpeed, double rightSpeed) {
-        m_LeftElevator.set(leftSpeed);
-        m_RightElevator.set(-rightSpeed);
+        m_LeftElevator.set(-leftSpeed);
+        m_RightElevator.set(rightSpeed);
     }
 
     public void idle() {

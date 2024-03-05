@@ -244,7 +244,7 @@ public class Robot extends TimedRobot {
 
     try { limelightField.setRobotPose(m_visionSystem.getRobotPose(Rotation2d.fromDegrees(0)).get(0)); } catch (Exception e) {}
     
-    m_elevator.manual(m_HelperStick.getRawAxis(2), m_HelperStick.getRawAxis(3));
+    // m_elevator.manual(m_HelperStick.getRawAxis(2), m_HelperStick.getRawAxis(3));
     SmartDashboard.putNumber("Right Elevator Position", m_elevator.getPositions()[0]);
     SmartDashboard.putNumber("Left Elevator Position", m_elevator.getPositions()[1]);
 

@@ -128,7 +128,7 @@ public class SwerveDrive implements Subsystem {
     }
 
     public void setX() {
-        m_FLSwerve.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(50)));
+        m_FLSwerve.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
         m_FRSwerve.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
         m_RLSwerve.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
         m_RRSwerve.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));

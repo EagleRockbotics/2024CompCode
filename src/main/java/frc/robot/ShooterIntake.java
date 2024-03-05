@@ -37,6 +37,8 @@ public class ShooterIntake {
             m_shooter.setAngle(ShooterIntakeConstants.kShooterIntakePosition);
             m_shooter.runShooter(0);
             if (m_intake.atSetPoint() && m_shooter.atSetPoint()) {
+                m_intake.runPitchMotor(0);
+                m_shooter.runRotatingMotor(0);
                 timer.start();
                 if (timer.get() < 3) {
                     m_shooter.runIntake(1);
@@ -83,7 +85,6 @@ public class ShooterIntake {
             m_shooter.setAngle(Rotation2d.fromRadians(angle));
             if (m_shooter.atSetPoint()) {
                 SmartDashboard.putBoolean("Aimed", true);
-                m_shooter.runRotatingMotor(0);
             }
         }
         m_shooter.runIntake(0);

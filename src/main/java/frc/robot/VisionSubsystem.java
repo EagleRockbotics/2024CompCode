@@ -157,7 +157,7 @@ public class VisionSubsystem extends SubsystemBase {
 
         var tempxDist = (tagHeight - camera.zOffset) / Math.tan(pitchAngle * Math.PI / 180);
 
-        Translation2d translation = new Translation2d(tempxDist, new Rotation2d(robotAngle.getDegrees() + yawAngle));
+        Translation2d translation = new Translation2d(tempxDist, new Rotation2d(robotAngle.getDegrees() + yawAngle + camera.yawOffset));
         translation = translation.plus(new Translation2d(camera.xOffset, camera.yOffset));
         
         out.put(Integer.valueOf(id), new Transform2d(translation, Rotation2d.fromDegrees(0)));

@@ -67,7 +67,8 @@ public final class Constants {
 
   public static class FieldConstants {
     // constants here should be in meters
-    public static double kSpeakerHeight = 5;
+    public static double kSpeakerHeightClose = 5;
+    public static double kSpeakerHeightFar = 5.5;
   }
 
   public static class RobotConstants {

@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 import com.revrobotics.CANSparkMax;
@@ -8,7 +9,6 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.ShooterConstants;
 
 
 public class Intake {
@@ -19,8 +19,6 @@ public class Intake {
     private static PIDController m_pitchController;
 
     private static DigitalInput m_limitSwitch;
-
-    private String m_currentCommand = IntakeConstants.kIdle;
 
     /**
      * Constructor that uses constants in constants file
@@ -33,68 +31,36 @@ public class Intake {
         m_limitSwitch = new DigitalInput(IntakeConstants.kLimitSwitchPort);
     }
 
-    /**
-     * Constructor that uses passed in Can Ids
-     * @param IntakeMotorCanId
-     * @param PitchMotorCanId
-     * @param PitchEncoderCanId
-     */
-    public Intake(int IntakeMotorCanId, int PitchMotorCanId, int PitchEncoderCanId, int LimitSwitchPort) {
-        m_intakeMotor = new CANSparkMax(IntakeMotorCanId, MotorType.kBrushless);
-        m_pitchMotor = new CANSparkMax(PitchMotorCanId, MotorType.kBrushless);
-        m_pitchEncoder = new CANcoder(PitchEncoderCanId);
-        m_pitchController = new PIDController(IntakeConstants.kPitchP, IntakeConstants.kPitchI, IntakeConstants.kPitchD);
-        m_limitSwitch = new DigitalInput(LimitSwitchPort);
+    public Rotation2d getAngleRadians() {
+        return new Rotation2d(m_pitchEncoder.getAbsolutePosition().getValueAsDouble() * 360);
     }
 
-    private double getAngleRadians() {
-        return m_pitchEncoder.getAbsolutePosition().getValueAsDouble() * 360;
+    public boolean getLimitSwitch() {
+        return m_limitSwitch.get();
     }
 
     /**
      * Sets the intake to a certain angle
+     * @param angle a Rotation2d containing the angle to set the intake to
      */
-    private void setAngle() {
-        double cosineScalar = Math.cos(getAngleRadians());
-        m_pitchMotor.set(m_pitchController.calculate(getAngleRadians()) + IntakeConstants.kPitchKG * cosineScalar);
+    public void setAngle(Rotation2d angle) {
+        double cosineScalar = Math.cos(getAngleRadians().getRadians());
+        m_pitchMotor.set(m_pitchController.calculate(getAngleRadians().getRadians(), angle.getRadians()) + IntakeConstants.kPitchKG * cosineScalar);
     }
 
     /**
-     * Function for changing the current command. If setting the current command to kLoadShooter, make sure that you also set the shooter to the load shooter command
-     * @param command Takes IntakeConstants.(kIdle, kLoadShooter)
+     * runs the intake at a certain speed
+     * @param speed should be -1 to 1, positive to intake, negative to outtake
      */
-    public void setCommand(String command) {
-        m_currentCommand = command;
+    public void runIntake(double speed) {
+        m_intakeMotor.set(speed);
     }
 
     /**
-     * Function to be called every loop
+     * runs the pitch motor for testing purposes
+     * @param speed the speed of the motor, should be -1 to 1
      */
-    public void periodic() {
-        if (m_currentCommand == IntakeConstants.kLoadShooter) {
-            if (!m_limitSwitch.get()) {
-                m_intakeMotor.set(1);
-                m_pitchController.setSetpoint(IntakeConstants.kPitchLow);
-                setAngle();
-                if (m_pitchController.atSetpoint()) {
-                    m_pitchMotor.set(0);
-                }
-            } else {
-                m_pitchController.setSetpoint(IntakeConstants.kPitchHigh);
-                m_intakeMotor.set(0);
-                setAngle();
-                if (m_pitchController.atSetpoint()) {
-                    m_pitchMotor.set(0);
-                    m_currentCommand = IntakeConstants.kIdle;
-                }
-            }
-        } else {
-            m_pitchController.setSetpoint(IntakeConstants.kPitchHigh);
-            m_intakeMotor.set(0);
-            setAngle();
-            if (!m_pitchController.atSetpoint()) {
-                m_pitchMotor.set(0);
-            }
-        }
+    public void runPitchMotor(double speed) {
+        m_pitchMotor.set(speed);
     }
 }

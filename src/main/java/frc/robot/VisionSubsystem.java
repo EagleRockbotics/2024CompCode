@@ -44,7 +44,7 @@ class Camera {
     return result.getTargets();
   }
 
-  public void printVisibleTags () {
+  public void printVisibleTags() {
     for (PhotonTrackedTarget target : getVisibleTags()) {
       System.out.println(target.getFiducialId());
       System.out.println(target.getYaw());
@@ -66,7 +66,7 @@ class Camera {
 
   public Camera(String name, double pOffset, double yaOffset, double rOffset, double xoffset, double yoffset,
       double zoffset) {
-        SmartDashboard.putString("Photonvision Camera Name", name);
+    SmartDashboard.putString("Photonvision Camera Name", name);
     self = new PhotonCamera(name);
     pitchOffest = pOffset;
     yawOffset = yaOffset;
@@ -107,7 +107,8 @@ public class VisionSubsystem extends SubsystemBase {
       JsonNode tagPosRoot = mapper
           .readTree(Filesystem.getDeployDirectory().toPath().resolve(Constants.APRILTAG_POSITION_JSON_NAME).toFile());
       for (JsonNode node : tagPosRoot) {
-        tagLocations.put(node.get("id").asInt(), new Pose2d(node.get("x").asDouble(), node.get("y").asDouble(), Rotation2d.fromDegrees(node.get("rotation").asDouble())));
+        tagLocations.put(node.get("id").asInt(), new Pose2d(node.get("x").asDouble(), node.get("y").asDouble(),
+            Rotation2d.fromDegrees(node.get("rotation").asDouble())));
       }
       for (JsonNode node : camRoot) {
         cameras.add(new Camera(node.get("name").asText(),
@@ -122,16 +123,18 @@ public class VisionSubsystem extends SubsystemBase {
     } catch (Exception e) {
       e.printStackTrace();
     }
-  
 
   }
 
   @Override
   public void periodic() {
     updateTagList();
-    // for (Map.Entry<Integer, Transform2d> entry : getDistances(Rotation2d.fromDegrees(0)).entrySet()) {
-    //     System.out.println("ID:" + entry.getKey().toString() + " Distances:" + new Double(entry.getValue().getX()).toString() + " ," + new Double(entry.getValue().getY()).toString());
-    //       }
+    // for (Map.Entry<Integer, Transform2d> entry :
+    // getDistances(Rotation2d.fromDegrees(0)).entrySet()) {
+    // System.out.println("ID:" + entry.getKey().toString() + " Distances:" + new
+    // Double(entry.getValue().getX()).toString() + " ," + new
+    // Double(entry.getValue().getY()).toString());
+    // }
   }
 
   void updateTagList() {
@@ -149,20 +152,21 @@ public class VisionSubsystem extends SubsystemBase {
         // x
         var pitchAngle = tag.getPitch() + camera.pitchOffest;
         // z
-        var yawAngle = tag.getYaw() + camera.yawOffset;
+        var yawAngle = tag.getYaw();
         var tagHeight = tagOffset.get(id);
 
-        var tempxDist = (tagHeight - camera.zOffset) / Math.tan(yawAngle * Math.PI/180);
-        var yDist = (Math.tan(pitchAngle * Math.PI/180) * tempxDist) + camera.xOffset;
-        var xDist = tempxDist + camera.xOffset;
-
-        out.put(Integer.valueOf(id), new Transform2d(new Translation2d(xDist, yDist).rotateBy(robotAngle), Rotation2d.fromDegrees(0)));
+        var tempxDist = (tagHeight - camera.zOffset) / Math.tan(pitchAngle * Math.PI / 180);
+        var yDist = (Math.sin(yawAngle * Math.PI / 180) * tempxDist) + camera.yOffset;
+        var xDist = (Math.cos(tempxDist * Math.PI / 180) * tempxDist) + camera.xOffset;
+        
+        out.put(Integer.valueOf(id), new Transform2d(new Translation2d(xDist, yDist)
+            .rotateBy(Rotation2d.fromDegrees(robotAngle.getDegrees() + camera.yawOffset)), Rotation2d.fromDegrees(0)));
       }
     }
     return out;
   }
 
-  public List<Pose2d> getRobotPose (Rotation2d rotation) {
+  public List<Pose2d> getRobotPose(Rotation2d rotation) {
     var limelightOffsets = getDistances(rotation);
     List<Pose2d> poses = new ArrayList<>();
     for (Map.Entry<Integer, Transform2d> entry : limelightOffsets.entrySet()) {
@@ -171,8 +175,8 @@ public class VisionSubsystem extends SubsystemBase {
 
       poses.add(tagLocations.get(id).transformBy(offset.inverse()));
     }
-    
+
     return poses;
   }
 
-} 
+}

@@ -27,16 +27,30 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static class ElevatorConstants {
+    public static int kRightElevatorCanID = 19;
+    public static int kLeftElevatorCanID = 17;
+    public static int kRightElevatorEncoderCanId = 20;
+    public static int kLeftElevatorEncoderCanId = 21;
+    public static double kElevatorMaxHeight = 0;
+    public static double kElevatorDownHeight = 7.9;
+    public static String kElevatorIdle = "idle";
+    public static String kRelease = "max";
+    public static String kReturn = "min";
+    public static String kElevatorManual = "manual";
+  }
+
   public static class ControllerConstants {
     public static int kDrivingJoystickPort = 0;
     public static int kDrivingJoystickX = 1;
     public static int kDrivingJoystickY = 0;
     public static int kDrivingJoystickZ = 2;
-    public static double kDrivingSpeed = 0.5;
+    public static double kDrivingSpeed = .75;
     public static double kSteerSpeed = 1;
     public static double kSteerDeadzone = 0.1;
     public static double kDriveDeadzone = 0.1;
-    public static int kHelperJoystickPort = 2;
+    public static int kHelperJoystickPort = 1;
   }
   public static class DriveConstants {
     public static double kMaxSpeedMetersPerSecond = 4.5;
@@ -78,9 +92,15 @@ public final class Constants {
 
     public static boolean kGyroReversed = false;
 
-    public static double kAutoTargettinP = 1;
-    public static double kAutoTargettinI = 0;
-    public static double kAutoTargettinD = 0;
+    //Pathplanner Translation PID Constants
+    public static double TkP = 0.01;
+    public static double TkI = 0.0;
+    public static double TkD = 0.0;
+
+    //Pathplanner Rotation PID Constants
+    public static double RkP = 0.0001;
+    public static double RkI = 0.0;
+    public static double RkD = 0.0;
   }
 
 
@@ -89,7 +109,7 @@ public final class Constants {
 
     public static boolean FL_driveInverted = true;
     public static boolean FL_steerInverted = false;
-
+ 
     public static boolean FR_driveInverted = false;
     public static boolean FR_steerInverted = false;
 
@@ -107,7 +127,7 @@ public final class Constants {
 
 
     public static double kDrivingMotorFreeSpeedRps = kFreeSpeedRpm / 60;
-    public static double kWheelDiamaterMeters = .1016;
+    public static double kWheelDiamaterMeters = .1;
     public static double kWheelCircumferenceMeters = kWheelDiamaterMeters * Math.PI;
 
 

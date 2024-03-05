@@ -84,8 +84,8 @@ public class SwerveDrive implements Subsystem {
                 }, this);
         SmartDashboard.putData("Field View", m_field2d);
 
-        autoTargetingController = new PIDController(DriveConstants.kAutoTargettinP, DriveConstants.kAutoTargettinI,
-                DriveConstants.kAutoTargettinD);
+        autoTargetingController = new PIDController(DriveConstants.kAutoTargettingP, DriveConstants.kAutoTargettingI,
+                DriveConstants.kAutoTargettingD);
     }
 
     public void publishStates() {

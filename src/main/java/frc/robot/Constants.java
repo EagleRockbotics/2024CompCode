@@ -101,6 +101,11 @@ public final class Constants {
     public static double RkP = 0.0001;
     public static double RkI = 0.0;
     public static double RkD = 0.0;
+
+    //PID constants for controlling rotation of robot
+    public static double kAutoTargettingP = .001;
+    public static double kAutoTargettingI = 0;
+    public static double kAutoTargettingD = 0;
   }
 
 

@@ -1,1 +1,11 @@
-{}
+{
+    "rock" : {
+        "name" : "Integrated_camera",
+        "pitch" : 0,
+        "yaw" : 180,
+        "roll" : 0,
+        "x" : -0.3556,
+        "y" : 0,
+        "z" : 0
+    }
+}

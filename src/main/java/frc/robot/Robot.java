@@ -158,7 +158,6 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    //m_DriveStick.setRumble(RumbleType.kBothRumble, 1);
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -240,13 +239,6 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Right Elevator Position", m_elevator.getPositions()[0]);
     SmartDashboard.putNumber("Left Elevator Position", m_elevator.getPositions()[1]);
 
-    // double angle = (Math.atan2(m_DriveStick.getRawAxis(1), m_DriveStick.getRawAxis(0)) * 180 / Math.PI) - 90;
-    // double speed = Math.sqrt(Math.pow(m_DriveStick.getRawAxis(1), 2) + Math.pow(m_DriveStick.getRawAxis(0), 2));
-    // if (Math.abs(speed) > ModuleConstants.kDeadzone) {
-    //   m_swerveDrive.PIDTuningHelper(angle, speed);
-    // } else {
-    //   m_swerveDrive.stopModules();
-    // }
   }
 
   /** This function is called once when the robot is first started up. */

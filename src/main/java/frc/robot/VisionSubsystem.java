@@ -70,9 +70,9 @@ class Camera {
     pitchOffest = pOffset;
     yawOffset = yaOffset;
     rollOffset = rOffset;
-    // side-side
-    xOffset = xoffset;
     // forward-backward
+    xOffset = xoffset;
+    // side-side
     yOffset = yoffset;
     // up-down
     zOffset = zoffset;
@@ -128,12 +128,6 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     updateTagList();
-    // for (Map.Entry<Integer, Transform2d> entry :
-    // getDistances(Rotation2d.fromDegrees(0)).entrySet()) {
-    // System.out.println("ID:" + entry.getKey().toString() + " Distances:" + new
-    // Double(entry.getValue().getX()).toString() + " ," + new
-    // Double(entry.getValue().getY()).toString());
-    // }
   }
 
   void updateTagList() {

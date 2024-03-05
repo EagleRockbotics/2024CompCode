@@ -150,17 +150,17 @@ public class VisionSubsystem extends SubsystemBase {
       for (PhotonTrackedTarget tag : entry.getValue()) {
         var id = tag.getFiducialId();
         // x
-        var pitchAngle = tag.getPitch();
+        var pitchAngle = tag.getPitch() + camera.pitchOffest;
         // z
-        var yawAngle = tag.getYaw() + camera.yawOffset;
+        var yawAngle = tag.getYaw();
         var tagHeight = tagOffset.get(id);
 
-        var tempxDist = (tagHeight - camera.zOffset) / Math.tan(yawAngle * Math.PI / 180);
-        var yDist = (Math.tan(pitchAngle * Math.PI / 180) * tempxDist) + camera.xOffset;
+        var tempxDist = (tagHeight - camera.zOffset) / Math.tan(pitchAngle * Math.PI / 180);
+        var yDist = (Math.tan(yawAngle * Math.PI / 180) * tempxDist) + camera.xOffset;
         var xDist = tempxDist + camera.xOffset;
 
         out.put(Integer.valueOf(id), new Transform2d(new Translation2d(xDist, yDist)
-            .rotateBy(Rotation2d.fromDegrees(robotAngle.getDegrees() + camera.pitchOffest)), Rotation2d.fromDegrees(0)));
+            .rotateBy(Rotation2d.fromDegrees(robotAngle.getDegrees() + camera.yawOffset)), Rotation2d.fromDegrees(0)));
       }
     }
     return out;

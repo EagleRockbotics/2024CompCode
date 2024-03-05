@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -88,7 +87,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   HashMap<Camera, List<PhotonTrackedTarget>> tags = new HashMap<>();
 
-  List<Camera> cameras = new ArrayList();
+  List<Camera> cameras = new ArrayList<>();
 
   public VisionSubsystem() {
     try {

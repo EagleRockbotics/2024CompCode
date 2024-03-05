@@ -6,13 +6,8 @@ import edu.wpi.first.math.controller.PIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
-
-import edu.wpi.first.networktables.NetworkTableInstance;
 
 import frc.robot.Constants.ModuleConstants;
 import edu.wpi.first.wpilibj.Timer;

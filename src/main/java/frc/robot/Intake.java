@@ -29,12 +29,17 @@ public class Intake {
         m_pitchEncoder = new CANcoder(IntakeConstants.kPitchEncoderCanId);
         m_pitchController = new PIDController(IntakeConstants.kPitchP, IntakeConstants.kPitchI, IntakeConstants.kPitchD);
         m_limitSwitch = new DigitalInput(IntakeConstants.kLimitSwitchPort);
+        m_pitchController.setTolerance(IntakeConstants.kIntakeTolerance);
     }
 
-    public Rotation2d getAngleRadians() {
+    public Rotation2d getAngle() {
         return new Rotation2d(m_pitchEncoder.getAbsolutePosition().getValueAsDouble() * 360);
     }
 
+    /**
+     * Gets the current value of the limit switch
+     * @return whether the limit switch is pressed or not
+     */
     public boolean getLimitSwitch() {
         return m_limitSwitch.get();
     }
@@ -44,8 +49,13 @@ public class Intake {
      * @param angle a Rotation2d containing the angle to set the intake to
      */
     public void setAngle(Rotation2d angle) {
-        double cosineScalar = Math.cos(getAngleRadians().getRadians());
-        m_pitchMotor.set(m_pitchController.calculate(getAngleRadians().getRadians(), angle.getRadians()) + IntakeConstants.kPitchKG * cosineScalar);
+        double cosineScalar = Math.cos(getAngle().getRadians());
+        m_pitchController.setSetpoint(angle.getRadians());
+        m_pitchMotor.set(m_pitchController.calculate(getAngle().getRadians()) + IntakeConstants.kPitchKG * cosineScalar);
+    }
+
+    public Boolean atSetPoint() {
+        return m_pitchController.atSetpoint();
     }
 
     /**

@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 
 /**
@@ -29,19 +30,24 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
+  public static class ShooterIntakeConstants {
+    public static Rotation2d kIntakeLowerPosition = Rotation2d.fromDegrees(-15);   // in degrees
+    public static Rotation2d kShooterIntakePosition = Rotation2d.fromDegrees(-15);  // in degrees
+    public static Rotation2d kIntakeHigherPosition = Rotation2d.fromDegrees(100);  // in degrees
+    public static Rotation2d kShooterClimbPosition = Rotation2d.fromDegrees(90);   // in degrees
+    public static double kShooterVelocity = 5;  // in meters per second
+  }
+
   public static class IntakeConstants {
     public static int kPitchMotorCanId = 25;
     public static int kIntakeMotorCanId = 26;
     public static int kPitchEncoderCanId = 27;
     public static int kLimitSwitchPort = 0;
-    public static double kPitchLow = -25 * Math.PI / 180; // in radians
-    public static double kPitchHigh = 130 * Math.PI / 180; // in radians
-    public static String kLoadShooter = "intake";
-    public static String kIdle = "idle";
     public static double kPitchP = 0;
     public static double kPitchI = 0;
     public static double kPitchD = 0;
     public static double kPitchKG = .07;
+    public static double kIntakeTolerance = 5 * Math.PI / 180;
   }
 
   public static class ShooterConstants {
@@ -54,21 +60,17 @@ public final class Constants {
     public static int kShootingLeftCanId = 10;
     public static int kShootingRightCanId = 15;
     public static int kLimitSwitchPort = 1;
-    public static double kShooterTolerance = 2 * Math.PI / 180; // in radians
+    // public static double kShooterTolerance = 2 * Math.PI / 180; // in radians
     public static int kShooterRotatingEncoderCanId = 11;
-    public static double kLoadShooterPosition = 0; // in radians
-    public static double kClimbingShooterPosition = 25; // in radians
-    public static String kLoadShooter = "load";
-    public static String kClimbShooter = "climb";
-    public static String kFireShooterSpeaker = "shoot";
-    public static String kRest = "rest";
     public static double kShooterEncoderRatio = 2/3;
+    public static double kShooterTolerance = 2 * Math.PI / 180;
   }
 
   public static class FieldConstants {
     // constants here should be in meters
-    public static double kSpeakerHeightClose = 5;
-    public static double kSpeakerHeightFar = 5.5;
+    public static double kSpeakerHeightClose = 2.11;
+    public static double kSpeakerHeightFar = 1.98;
+    public static double kCloseEdgeFromTag = .46;
   }
 
   public static class RobotConstants {

@@ -64,12 +64,17 @@ public class Shooter {
         m_rotatingMotor.set(speed);
     }
 
+    public Boolean atSetPoint() {
+        return m_rotatingController.atSetpoint();
+    }
+
     /**
      * Sets the position of the arm
      * @param targetAngle a Rotation2d containing the angle to set the arm to, 0 to go straight outwards
      */
     public void setAngle(Rotation2d targetAngle) {
         double cosineScalar = Math.cos(getAngle().getRadians());
-        m_rotatingMotor.set(m_rotatingController.calculate(getAngle().getRadians(), targetAngle.getRadians()) + ShooterConstants.kShootingKG * cosineScalar);
+        m_rotatingController.setSetpoint(targetAngle.getRadians());
+        m_rotatingMotor.set(m_rotatingController.calculate(getAngle().getRadians()) + ShooterConstants.kShootingKG * cosineScalar);
     }
 }

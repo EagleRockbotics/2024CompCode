@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,9 +18,6 @@ import edu.wpi.first.cameraserver.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
-
-import edu.wpi.first.wpilibj.PowerDistribution;
-import java.util.ArrayList;
 
 import frc.robot.Constants.*;
 
@@ -49,10 +45,6 @@ public class Robot extends TimedRobot {
 
   private static Field2d limelightField = new Field2d();
 
-  private static PowerDistribution PD;
-  private ArrayList<Double> voltage = new ArrayList<Double>();
-
-
   // autonomous
   private SendableChooser<String> joshAutoChooser;
 
@@ -75,11 +67,9 @@ public class Robot extends TimedRobot {
     m_DriveStick = new Joystick(ControllerConstants.kDrivingJoystickPort);
     m_HelperStick = new Joystick(ControllerConstants.kHelperJoystickPort);
     m_elevator = new Elevator();
-    CameraServer.startAutomaticCapture(0);
+    // CameraServer.startAutomaticCapture(0);
 
     m_swerveDrive.m_gyro.reset();
-
-    PD = new PowerDistribution(1, ModuleType.kRev);
   }
 
   /**
@@ -94,10 +84,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    CommandScheduler.getInstance().run();
-    double v = PD.getVoltage();
-    voltage.add(v);
-    SmartDashboard.putNumber("voltage", v);
+    // CommandScheduler.getInstance().run();
+    // double v = PD.getVoltage();
+    // voltage.add(v);
+    // SmartDashboard.putNumber("voltage", v);
   }
 
   /**
@@ -140,7 +130,7 @@ public class Robot extends TimedRobot {
     } else if (joshAutoChooser.getSelected() == "driveFwd") {
       if (Math.abs(m_swerveDrive.getPose().getX()) <= (3)) { //6 meters, actually 7.5; 3 meters, actually 5.96 meters
         SmartDashboard.putNumber("x Position", m_swerveDrive.getPose().getX());
-        m_swerveDrive.driveFieldRelative(0, -.1, 0);
+        m_swerveDrive.driveFieldRelative(0, -.25, 0);
       } else {
         m_swerveDrive.driveFieldRelative(0, 0, 0);
       }
@@ -208,8 +198,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) { 
       m_autonomousCommand.cancel();
     }
-    System.out.println(voltage);
-    SmartDashboard.putString("voltage array", voltage.toString());
   }
 
   /** This function is called periodically when disabled. */

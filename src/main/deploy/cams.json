@@ -1,11 +1,11 @@
 {
     "rock" : {
-        "name" : "USB_camera",
+        "name" : "Camera_Module_v1",
         "pitch" : 0,
-        "yaw" : 0,
+        "yaw" : 180,
         "roll" : 0,
-        "x" : 0,
+        "x" : -0.3556,
         "y" : 0,
-        "z" : 0
+        "z" : 0.57
     }
 }

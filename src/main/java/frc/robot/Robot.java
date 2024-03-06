@@ -6,22 +6,22 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.cameraserver.*;
 
-import java.util.concurrent.TimeUnit;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.proto.Controller;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
+
+import edu.wpi.first.wpilibj.PowerDistribution;
+import java.util.ArrayList;
 
 import frc.robot.Constants.*;
 
@@ -40,12 +40,21 @@ public class Robot extends TimedRobot {
   private static Joystick m_DriveStick;
   private static Joystick m_HelperStick;
 
-  private static SendableChooser<Command> autoChooser;
+  private static Elevator m_elevator;
+
+  // private static SendableChooser<Command> autoChooser;
   private static Command m_autonomousCommand;
 
   private static VisionSubsystem m_visionSystem = new VisionSubsystem();
 
   private static Field2d limelightField = new Field2d();
+
+  private static PowerDistribution PD;
+  private ArrayList<Double> voltage = new ArrayList<Double>();
+
+
+  // autonomous
+  private SendableChooser<String> joshAutoChooser;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -54,11 +63,23 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    joshAutoChooser = new SendableChooser<>();
+    joshAutoChooser.addOption("empty", "empty");
+    joshAutoChooser.addOption("Drive Forward 6 Meters", "driveFwd");
+    joshAutoChooser.setDefaultOption("Drive Forward", "driveFwd");
+    // joshAutoChooser.initSendable(null);
+    SmartDashboard.putData("Auto Chooser", joshAutoChooser);
     m_swerveDrive = new SwerveDrive();
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData(autoChooser);
+    // autoChooser = AutoBuilder.buildAutoChooser();
+    //  SmartDashboard.putData(autoChooser);
     m_DriveStick = new Joystick(ControllerConstants.kDrivingJoystickPort);
     m_HelperStick = new Joystick(ControllerConstants.kHelperJoystickPort);
+    m_elevator = new Elevator();
+    CameraServer.startAutomaticCapture(0);
+
+    m_swerveDrive.m_gyro.reset();
+
+    PD = new PowerDistribution(1, ModuleType.kRev);
   }
 
   /**
@@ -74,8 +95,9 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-
-    
+    double v = PD.getVoltage();
+    voltage.add(v);
+    SmartDashboard.putNumber("voltage", v);
   }
 
   /**
@@ -97,52 +119,79 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = autoChooser.getSelected();
+    m_swerveDrive.zeroHeading();
+    m_swerveDrive.resetPose(new Pose2d());
+    // a_timer1.reset();
+    // a_timer1.start();
 
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
+    // m_autonomousCommand = autoChooser.getSelected();
+
+    // if (m_autonomousCommand != null) {
+    //   // m_autonomousCommand.schedule();
+    // }
   }
 
   /** This function is called periodically during autonomous. */
+  //8.28-1.55
   @Override
   public void autonomousPeriodic() {
-   
-  
+    if (joshAutoChooser.getSelected() == "empty") {
+      m_swerveDrive.driveFieldRelative(0, 0, 0);
+    } else if (joshAutoChooser.getSelected() == "driveFwd") {
+      if (Math.abs(m_swerveDrive.getPose().getX()) <= (3)) { //6 meters, actually 7.5; 3 meters, actually 5.96 meters
+        SmartDashboard.putNumber("x Position", m_swerveDrive.getPose().getX());
+        m_swerveDrive.driveFieldRelative(0, -.1, 0);
+      } else {
+        m_swerveDrive.driveFieldRelative(0, 0, 0);
+      }
+    }
+    
+    m_elevator.idle();
+    // if (a_timer1.get() < 2.6) {
+    //   m_swerveDrive.driveFieldRelative(0, .5, 0);
+    //   SmartDashboard.putNumber("time", a_timer1.get());
+    // } else {
+    //   m_swerveDrive.driveFieldRelative(0, 0, 0);
+    // }
   }
 
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    //m_HelperStick.setRumble(RumbleType.kBothRumble, 1);
-    m_swerveDrive.m_gyro.reset();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
+    m_elevator.teleopInit();
   }
 
   /** This function is called periodically during operator control. */
   //Gyro angle was off by 90 degrees, sticks inverted incorrectly, and RobotRelative works better than field relative with no known downsides
   @Override
   public void teleopPeriodic() {
-    var xDriveSpeed = -m_HelperStick.getRawAxis(0) * ControllerConstants.kDrivingSpeed;
-    var yDriveSpeed = m_HelperStick.getRawAxis(1) * ControllerConstants.kDrivingSpeed;
-    var rotDriveSpeed = -m_HelperStick.getRawAxis(4) * Math.PI * ControllerConstants.kSteerSpeed;
+    m_elevator.manual(m_HelperStick.getRawAxis(2), m_HelperStick.getRawAxis(3));
 
-    if(m_HelperStick.getRawButtonReleased(5)) {
-      m_swerveDrive.zeroHeading();
+    var xDriveSpeed = -m_DriveStick.getRawAxis(0) * ControllerConstants.kDrivingSpeed;
+
+    var yDriveSpeed = m_DriveStick.getRawAxis(1) * ControllerConstants.kDrivingSpeed;
+    if (m_DriveStick.getRawButton(5)) {
+      yDriveSpeed = m_DriveStick.getRawAxis(1);
+    }
+    
+    var rotDriveSpeed = -m_DriveStick.getRawAxis(4) * Math.PI * ControllerConstants.kSteerSpeed;
+
+    if(m_HelperStick.getRawButtonReleased(3)) {
+      m_swerveDrive.m_gyro.reset();
     }
 
-    if (Math.abs(m_HelperStick.getRawAxis(4)) <= ControllerConstants.kSteerDeadzone) {
+    if (Math.abs(m_DriveStick.getRawAxis(4)) <= ControllerConstants.kSteerDeadzone) {
       rotDriveSpeed = 0;
     } 
 
-    if (Math.abs(m_HelperStick.getRawAxis(1)) <= ControllerConstants.kDriveDeadzone) {
+    if (Math.abs(m_DriveStick.getRawAxis(1)) <= ControllerConstants.kDriveDeadzone) {
       yDriveSpeed = 0;
     }
 
-    if (Math.abs(m_HelperStick.getRawAxis(0)) <= ControllerConstants.kDriveDeadzone) {
+    if (Math.abs(m_DriveStick.getRawAxis(0)) <= ControllerConstants.kDriveDeadzone) {
       xDriveSpeed = 0;
     }
 
@@ -150,17 +199,17 @@ public class Robot extends TimedRobot {
         xDriveSpeed, 
         yDriveSpeed,
         rotDriveSpeed);
-
-   
   }
 
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
-    m_HelperStick.setRumble(RumbleType.kBothRumble, 0);
+    m_DriveStick.setRumble(RumbleType.kBothRumble, 0);
     if (m_autonomousCommand != null) { 
       m_autonomousCommand.cancel();
     }
+    System.out.println(voltage);
+    SmartDashboard.putString("voltage array", voltage.toString());
   }
 
   /** This function is called periodically when disabled. */
@@ -172,6 +221,8 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {
     SmartDashboard.putData("Limelight Field", limelightField);
+    m_elevator.teleopInit(); 
+    // m_elevator.changeCommand(ElevatorConstants.kElevatorManual);
   }
 
   /** This function is called periodically during test mode. */
@@ -184,13 +235,10 @@ public class Robot extends TimedRobot {
 
     try { limelightField.setRobotPose(m_visionSystem.getRobotPose(Rotation2d.fromDegrees(0)).get(0)); } catch (Exception e) {}
     
-    // double angle = (Math.atan2(m_DriveStick.getRawAxis(1), m_DriveStick.getRawAxis(0)) * 180 / Math.PI) - 90;
-    // double speed = Math.sqrt(Math.pow(m_DriveStick.getRawAxis(1), 2) + Math.pow(m_DriveStick.getRawAxis(0), 2));
-    // if (Math.abs(speed) > ModuleConstants.kDeadzone) {
-    //   m_swerveDrive.PIDTuningHelper(angle, speed);
-    // } else {
-    //   m_swerveDrive.stopModules();
-    // }
+    // m_elevator.manual(m_HelperStick.getRawAxis(2), m_HelperStick.getRawAxis(3));
+    SmartDashboard.putNumber("Right Elevator Position", m_elevator.getPositions()[0]);
+    SmartDashboard.putNumber("Left Elevator Position", m_elevator.getPositions()[1]);
+
   }
 
   /** This function is called once when the robot is first started up. */

@@ -62,11 +62,11 @@ public class SwerveDrive implements Subsystem {
                         m_FRSwerve.getPosition(),
                         m_RLSwerve.getPosition(),
                         m_RRSwerve.getPosition()
-                });
+                }, new Pose2d(new Translation2d(0, 0), Rotation2d.fromRadians(0)));
 
         AutoBuilder.configureHolonomic(this::getPose, this::resetPose, this::getCurrentRobotRelativeSpeeds,
-                this::driveRobotRelative, new HolonomicPathFollowerConfig(new PIDConstants(5.0, 0.0, 0.0),
-                        new PIDConstants(5.0, 0.0, 0.0), 4.5,
+                this::driveRobotRelative, new HolonomicPathFollowerConfig(new PIDConstants(DriveConstants.TkP, DriveConstants.TkI, DriveConstants.TkD),
+                        new PIDConstants(DriveConstants.RkP, DriveConstants.RkI, DriveConstants.RkD), 4.5,
                         Math.sqrt(Math.pow(DriveConstants.kTrackWidth, 2) + Math.pow(DriveConstants.kWheelBase, 2)),
                         new ReplanningConfig()),
                 () -> {
@@ -119,25 +119,25 @@ public class SwerveDrive implements Subsystem {
                 desiredStates[0], desiredStates[1], desiredStates[2], desiredStates[3]
         });
         publisherBlue.set(new SwerveModuleState[] { m_FLSwerve.getState(), m_FRSwerve.getState(), m_RLSwerve.getState(),
-                m_RRSwerve.getState() });
+                m_RRSwerve.getState() }); 
 
-        m_odometry.update(m_gyro.getRotation2d(), new SwerveModulePosition[] { m_FLSwerve.getPosition(),
+        m_odometry.update(Rotation2d.fromRadians(((m_gyro.getAngle()) * Math.PI)/180), new SwerveModulePosition[] { m_FLSwerve.getPosition(),
                 m_FRSwerve.getPosition(), m_RLSwerve.getPosition(), m_RRSwerve.getPosition() });
         m_field2d.setRobotPose(m_odometry.getPoseMeters());
 
     }
 
     public void setX() {
-        m_FLSwerve.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(50)));
+        m_FLSwerve.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
         m_FRSwerve.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
         m_RLSwerve.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
         m_RRSwerve.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
     }
 
     public void driveFieldRelative(double xSpeed, double ySpeed, double rot) {
-        SmartDashboard.putNumber("Gyro Position", m_gyro.getAngle() / 180 * Math.PI);
+        SmartDashboard.putNumber("Gyro Position", m_gyro.getAngle() * Math.PI / 180);
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed, ySpeed, rot,
-                Rotation2d.fromRadians((m_gyro.getAngle()+90) * Math.PI / 180));
+                Rotation2d.fromRadians((m_gyro.getAngle() + 90) * Math.PI / 180));
         SmartDashboard.putNumber("gyro", m_gyro.getAngle());
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(moduleStates);
@@ -186,7 +186,7 @@ public class SwerveDrive implements Subsystem {
     }
 
     public void resetPose(Pose2d pose) {
-        m_odometry.resetPosition(m_gyro.getRotation2d(), getModulePositions(), pose);
+        m_odometry.resetPosition(Rotation2d.fromRadians(((m_gyro.getAngle()) * Math.PI)/180), getModulePositions(), pose);
     }
 
     public ChassisSpeeds getCurrentRobotRelativeSpeeds() {

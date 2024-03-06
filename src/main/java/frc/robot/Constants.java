@@ -8,7 +8,6 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Rotation2d;
 
@@ -29,6 +28,20 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static class ElevatorConstants {
+    public static int kRightElevatorCanID = 19;
+    public static int kLeftElevatorCanID = 17;
+    public static int kRightElevatorEncoderCanId = 20;
+    public static int kLeftElevatorEncoderCanId = 21;
+    public static double kElevatorMaxHeight = 0;
+    public static double kElevatorDownHeight = 7.9;
+    public static String kElevatorIdle = "idle";
+    public static String kRelease = "max";
+    public static String kReturn = "min";
+    public static String kElevatorManual = "manual";
+  }
+
 
   public static class ShooterIntakeConstants {
     public static Rotation2d kIntakeLowerPosition = Rotation2d.fromDegrees(-15);   // in degrees
@@ -83,11 +96,11 @@ public final class Constants {
     public static int kDrivingJoystickX = 1;
     public static int kDrivingJoystickY = 0;
     public static int kDrivingJoystickZ = 2;
-    public static double kDrivingSpeed = 0.5;
+    public static double kDrivingSpeed = .75;
     public static double kSteerSpeed = 1;
     public static double kSteerDeadzone = 0.1;
     public static double kDriveDeadzone = 0.1;
-    public static int kHelperJoystickPort = 2;
+    public static int kHelperJoystickPort = 1;
   }
 
   public static class DriveConstants {
@@ -127,6 +140,16 @@ public final class Constants {
 
 
     public static boolean kGyroReversed = false;
+
+    //Pathplanner Translation PID Constants
+    public static double TkP = 0.01;
+    public static double TkI = 0.0;
+    public static double TkD = 0.0;
+
+    //Pathplanner Rotation PID Constants
+    public static double RkP = 0.0001;
+    public static double RkI = 0.0;
+    public static double RkD = 0.0;
   }
 
 
@@ -135,7 +158,7 @@ public final class Constants {
 
     public static boolean FL_driveInverted = true;
     public static boolean FL_steerInverted = false;
-
+ 
     public static boolean FR_driveInverted = false;
     public static boolean FR_steerInverted = false;
 
@@ -153,7 +176,7 @@ public final class Constants {
 
 
     public static double kDrivingMotorFreeSpeedRps = kFreeSpeedRpm / 60;
-    public static double kWheelDiamaterMeters = .1016;
+    public static double kWheelDiamaterMeters = .1;
     public static double kWheelCircumferenceMeters = kWheelDiamaterMeters * Math.PI;
 
 

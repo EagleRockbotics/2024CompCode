@@ -41,8 +41,6 @@ public class Robot extends TimedRobot {
   // private static SendableChooser<Command> autoChooser;
   private static Command m_autonomousCommand;
 
-  private static VisionSubsystem m_visionSystem = new VisionSubsystem();
-
   private static Field2d limelightField = new Field2d();
 
   // autonomous
@@ -128,7 +126,7 @@ public class Robot extends TimedRobot {
     if (joshAutoChooser.getSelected() == "empty") {
       m_swerveDrive.driveFieldRelative(0, 0, 0);
     } else if (joshAutoChooser.getSelected() == "driveFwd") {
-      if (Math.abs(m_swerveDrive.getPose().getX()) <= (3)) { //6 meters, actually 7.5; 3 meters, actually 5.96 meters
+      if (Math.abs(m_swerveDrive.getPose().getX()) <= (1)) { //6 meters, actually 7.5; 3 meters, actually 5.96 meters
         SmartDashboard.putNumber("x Position", m_swerveDrive.getPose().getX());
         m_swerveDrive.driveFieldRelative(0, -.25, 0);
       } else {
@@ -216,16 +214,10 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    m_visionSystem.periodic();
-    if(m_DriveStick.getRawButtonReleased(10)) {
-      m_swerveDrive.resetEncoders();
-    }
 
-    try { limelightField.setRobotPose(m_visionSystem.getRobotPose(Rotation2d.fromDegrees(0)).get(0)); } catch (Exception e) {}
+    m_elevator.manual(m_HelperStick.getRawAxis(-1), m_HelperStick.getRawAxis(-5));
     
     // m_elevator.manual(m_HelperStick.getRawAxis(2), m_HelperStick.getRawAxis(3));
-    SmartDashboard.putNumber("Right Elevator Position", m_elevator.getPositions()[0]);
-    SmartDashboard.putNumber("Left Elevator Position", m_elevator.getPositions()[1]);
 
   }
 

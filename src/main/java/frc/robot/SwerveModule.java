@@ -88,12 +88,14 @@ public class SwerveModule {
         }
     }
 
+    private static double ratio = 1/2;
+    
     public SwerveModulePosition getPosition() {
         if (!driveReversal) {
-            return new SwerveModulePosition(m_drivingEncoder.getPosition() * 2 * ModuleConstants.kWheelCircumferenceMeters,
+            return new SwerveModulePosition(m_drivingEncoder.getPosition() * ratio * ModuleConstants.kWheelCircumferenceMeters,
                     Rotation2d.fromRadians(m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI));
         } else {
-            return new SwerveModulePosition(-m_drivingEncoder.getPosition() * ModuleConstants.kWheelCircumferenceMeters,
+            return new SwerveModulePosition(-m_drivingEncoder.getPosition() * ratio * ModuleConstants.kWheelCircumferenceMeters,
                     Rotation2d.fromRadians(m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI));
         }
     }

@@ -45,7 +45,7 @@ public final class Constants {
     public static int kDrivingJoystickX = 1;
     public static int kDrivingJoystickY = 0;
     public static int kDrivingJoystickZ = 2;
-    public static double kDrivingSpeed = .75;
+    public static double kDrivingSpeed = 2.3; // .75 for power control
     public static double kSteerSpeed = 1;
     public static double kSteerDeadzone = 0.1;
     public static double kDriveDeadzone = 0.1;
@@ -132,7 +132,7 @@ public final class Constants {
 
     public static double kDrivingMotorFreeSpeedRps = kFreeSpeedRpm / 60;
     // public static double kWheelDiameterMeters = .1;
-    public static double kWheelCircumferenceMeters = .305;
+    public static double kWheelCircumferenceMeters = .314;
 
 
     // public static double kDrivingMotorReduction = (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);

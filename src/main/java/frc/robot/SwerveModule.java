@@ -88,6 +88,7 @@ public class SwerveModule {
         SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState, getTurningAngle());
 
         SmartDashboard.putNumber("Speed", optimizedDesiredState.speedMetersPerSecond);
+        SmartDashboard.putNumber("ActualSpeed", m_drivingEncoder.getVelocity());
 
         m_drivingPIDController.setReference(driveDirection*optimizedDesiredState.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
         m_turningSparkMax.set(

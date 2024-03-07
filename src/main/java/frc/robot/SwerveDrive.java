@@ -15,8 +15,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.math.controller.PIDController;
 
-import org.opencv.core.Mat.Tuple3;
-
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -97,7 +95,7 @@ public class SwerveDrive implements Subsystem {
     }
 
     public Rotation2d getHeading() {
-        return Rotation2d.fromDegrees(m_gyro.getAngle() + 90);
+        return Rotation2d.fromDegrees(m_gyro.getAngle());
     }
 
     public double getTurnRate() {
@@ -229,8 +227,8 @@ public class SwerveDrive implements Subsystem {
     public double[] JoystickConverter(double xAxis, double yAxis, double zAxis) {
         double[] XYRotValues = new double[3];
 
-        XYRotValues[0] = xAxis;
-        XYRotValues[1] = yAxis;
+        XYRotValues[0] = yAxis;
+        XYRotValues[1] = xAxis;
         XYRotValues[2] = zAxis;
 
         // apply deadzones
@@ -245,7 +243,7 @@ public class SwerveDrive implements Subsystem {
         }
 
         XYRotValues[0] *= -ControllerConstants.kDrivingSpeed;
-        XYRotValues[1] *= ControllerConstants.kDrivingSpeed;
+        XYRotValues[1] *= -ControllerConstants.kDrivingSpeed;
         XYRotValues[2] *= -Math.PI * ControllerConstants.kSteerSpeed;
 
         return XYRotValues;

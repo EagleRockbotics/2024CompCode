@@ -153,6 +153,16 @@ public class VisionSubsystem extends SubsystemBase {
     return out;
   }
 
+  public HashMap<Integer, Double> getDistancesMagnitudes () {
+    HashMap<Integer, Double> distances = new HashMap<>();
+    for (Map.Entry<Camera, List<PhotonTrackedTarget>> entry : tags.entrySet()) {
+      for (PhotonTrackedTarget tag : entry.getValue()) {
+          distances.put(tag.getFiducialId(), getDistanceMagnitude(tag, entry.getKey()));
+      }
+    }
+    return distances;
+  }
+
   public List<Pose2d> getRobotPose(Rotation2d rotation) {
     var limelightOffsets = getDistances(rotation);
     List<Pose2d> poses = new ArrayList<>();
@@ -175,5 +185,6 @@ public class VisionSubsystem extends SubsystemBase {
   public double getYawAngle (PhotonTrackedTarget target, Camera camera) {
     return target.getYaw() + camera.yawOffset;
   }
+
 
 }

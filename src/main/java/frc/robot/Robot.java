@@ -220,6 +220,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
+    SmartDashboard.putNumberArray("Limelight Distance Vector Magnitude", (Double[]) m_visionSystem.getDistancesMagnitudes().values().toArray());
     m_visionSystem.periodic();
     if(m_DriveStick.getRawButtonReleased(10)) {
       m_swerveDrive.resetEncoders();

@@ -29,7 +29,7 @@ public class SwerveModule {
     private double currentTime = 0;
     private double startingDirection = 0;
     private Random rand = new Random();
-    private boolean driveReversal;
+    private double driveDirection = 1;
 
 
     public SwerveModule(int drivingCANId, int turningCANId, int encoderNum, boolean reversedDrive,
@@ -37,16 +37,17 @@ public class SwerveModule {
         m_drivingSparkMax = new CANSparkMax(drivingCANId, MotorType.kBrushless);
         m_turningSparkMax = new CANSparkMax(turningCANId, MotorType.kBrushless);
 
-        m_drivingSparkMax.setInverted(reversedDrive);
-        m_turningSparkMax.setInverted(reversedSteer);
-        driveReversal = reversedDrive;
+        // m_drivingSparkMax.setInverted(reversedDrive);
+        // m_turningSparkMax.setInverted(reversedSteer);
+        if (reversedDrive) {
+            driveDirection = -1;
+        }
 
         m_drivingSparkMax.restoreFactoryDefaults();
         m_turningSparkMax.restoreFactoryDefaults();
 
         m_drivingEncoder = m_drivingSparkMax.getEncoder();
         m_turningEncoder = new CANcoder(encoderNum);
-
         
         m_turningPIDController = new PIDController(ModuleConstants.kTurningP, ModuleConstants.kTurningI,
                 ModuleConstants.kTurningD);
@@ -56,8 +57,10 @@ public class SwerveModule {
         m_drivingEncoder.setPositionConversionFactor(ModuleConstants.kDrivingEncoderPositionFactor);
         m_drivingEncoder.setVelocityConversionFactor(ModuleConstants.kDrivingEncoderVelocityFactor);
 
-        m_turningPIDController.enableContinuousInput(ModuleConstants.kTurningEncoderPositionPIDMinInput,
-                ModuleConstants.kTurningEncoderPositionPIDMaxInput);
+        m_turningPIDController.enableContinuousInput(
+            ModuleConstants.kTurningEncoderPositionPIDMinInput,
+            ModuleConstants.kTurningEncoderPositionPIDMaxInput
+        );
         
         m_drivingPIDController.setP(ModuleConstants.kDrivingP);
         m_drivingPIDController.setI(ModuleConstants.kDrivingI);
@@ -79,38 +82,32 @@ public class SwerveModule {
     }
 
     public SwerveModuleState getState() {
-        if (driveReversal) {
-            return new SwerveModuleState(-m_drivingEncoder.getVelocity(),
-                    new Rotation2d(m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI));
-        } else {
-            return new SwerveModuleState(m_drivingEncoder.getVelocity(),
-                    new Rotation2d(m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI));
-        }
+        return new SwerveModuleState(driveDirection * m_drivingEncoder.getVelocity() * ModuleConstants.kGearWheelRatio,
+                new Rotation2d(m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI));
     }
 
     public SwerveModulePosition getPosition() {
-        if (!driveReversal) {
-            return new SwerveModulePosition(m_drivingEncoder.getPosition() * 2 * ModuleConstants.kWheelCircumferenceMeters,
-                    Rotation2d.fromRadians(m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI));
-        } else {
-            return new SwerveModulePosition(-m_drivingEncoder.getPosition() * ModuleConstants.kWheelCircumferenceMeters,
-                    Rotation2d.fromRadians(m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI));
-        }
+        return new SwerveModulePosition(driveDirection * m_drivingEncoder.getPosition() * 2 * ModuleConstants.kWheelCircumferenceMeters * ModuleConstants.kGearWheelRatio,
+                Rotation2d.fromRadians(m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI));
     }
 
     public void setDesiredState(SwerveModuleState desiredState) {
-        SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState,
-                new Rotation2d(m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI));
+        SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(
+            desiredState,
+            new Rotation2d(
+                m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI
+            )
+        );
 
-        SmartDashboard.putNumber("current Positoin " + String.valueOf(m_drivingSparkMax.getDeviceId()),
-                m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 360);
-        SmartDashboard.putNumber("target angle " + String.valueOf(m_drivingSparkMax.getDeviceId()),
-                optimizedDesiredState.angle.getDegrees() + 180);
-        // m_drivingPIDController.setReference(optimizedDesiredState.speedMetersPerSecond,
-        // CANSparkMax.ControlType.kVelocity);
-        m_turningSparkMax
-                .set(-m_turningPIDController.calculate(m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 360,
-                        optimizedDesiredState.angle.getDegrees() + 180) / 16);
+        SmartDashboard.putNumber("Speed", optimizedDesiredState.speedMetersPerSecond);
+
+        m_drivingPIDController.setReference(driveDirection*optimizedDesiredState.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
+        m_turningSparkMax.set(
+            -m_turningPIDController.calculate(
+                m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 360, 
+                optimizedDesiredState.angle.getDegrees()
+            )
+        );
     }
 
     public void resetEncoders() {
@@ -125,18 +122,15 @@ public class SwerveModule {
     }
 
     public void testModule(double angle, double speed) {
-        // m_drivingPIDController.setReference(speed,
-        // CANSparkMax.ControlType.kVelocity);
-        // m_drivingPIDController.setReference(0, CANSparkMax.ControlType.kVelocity);
 
-        if (driveReversal) {
-            m_drivingSparkMax.set(-speed);
-            SmartDashboard.putNumber("speed", speed);
-        } else {
-            m_drivingSparkMax.set(speed);
-        }
-        m_turningSparkMax.set(-m_turningPIDController
-                .calculate(m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 360, angle));
+        m_drivingSparkMax.set(driveDirection*speed);
+ 
+        m_turningSparkMax.set(
+            -m_turningPIDController.calculate(
+                m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 360, 
+                angle
+                )
+        );
     }
 
     public void stopModule() {

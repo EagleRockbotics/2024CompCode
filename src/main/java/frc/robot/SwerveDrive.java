@@ -118,10 +118,15 @@ public class SwerveDrive implements Subsystem {
     public void setModuleStates(edu.wpi.first.math.kinematics.SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
 
-        m_FLSwerve.runModuleOptimised(desiredStates[0]);
-        m_FRSwerve.runModuleOptimised(desiredStates[1]);
-        m_RLSwerve.runModuleOptimised(desiredStates[2]);
-        m_RRSwerve.runModuleOptimised(desiredStates[3]);
+        // m_FLSwerve.runModuleOptimised(desiredStates[0]);
+        // m_FRSwerve.runModuleOptimised(desiredStates[1]);
+        // m_RLSwerve.runModuleOptimised(desiredStates[2]);
+        // m_RRSwerve.runModuleOptimised(desiredStates[3]);
+
+        m_FLSwerve.setDesiredState(desiredStates[0]);
+        m_FRSwerve.setDesiredState(desiredStates[1]);
+        m_RLSwerve.setDesiredState(desiredStates[2]);
+        m_RRSwerve.setDesiredState(desiredStates[3]);
 
         publisherRed.set(new SwerveModuleState[] {
                 desiredStates[0], desiredStates[1], desiredStates[2], desiredStates[3]

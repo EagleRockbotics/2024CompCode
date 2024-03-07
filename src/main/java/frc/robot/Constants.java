@@ -124,23 +124,24 @@ public final class Constants {
     public static boolean RR_steerInverted = false;
 
 
-    public static double kDrivingMotorPinionTeeth = 14;
+    // public static double kDrivingMotorPinionTeeth = 14;
 
 
     public static boolean kTurningEncoderInverted = true;
 
 
     public static double kDrivingMotorFreeSpeedRps = kFreeSpeedRpm / 60;
-    public static double kWheelDiamaterMeters = .1;
-    public static double kWheelCircumferenceMeters = kWheelDiamaterMeters * Math.PI;
+    // public static double kWheelDiameterMeters = .1;
+    public static double kWheelCircumferenceMeters = .305;
 
 
-    public static double kDrivingMotorReduction = (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);
-    public static double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters) / kDrivingMotorReduction;
+    // public static double kDrivingMotorReduction = (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);
+    public static double kGearWheelRatio = 1/6.75;
+    public static double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters) * kGearWheelRatio;
 
 
-    public static double kDrivingEncoderPositionFactor = (kWheelDiamaterMeters * Math.PI) / kDrivingMotorReduction;
-    public static double kDrivingEncoderVelocityFactor = ((kWheelDiamaterMeters * Math.PI) / kDrivingMotorReduction) * 60.0;
+    public static double kDrivingEncoderPositionFactor = kWheelCircumferenceMeters * kGearWheelRatio;
+    public static double kDrivingEncoderVelocityFactor = kWheelCircumferenceMeters * kGearWheelRatio * 60.0;
 
 
     public static double kTurningEncoderPositionPIDMinInput = 0.0;

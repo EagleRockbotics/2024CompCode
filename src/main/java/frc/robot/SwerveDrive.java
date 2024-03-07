@@ -62,7 +62,7 @@ public class SwerveDrive implements Subsystem {
         publishStates();
 
         m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics,
-                m_gyro.getRotation2d(),
+                getHeading(),
                 new SwerveModulePosition[] {
                         m_FLSwerve.getPosition(),
                         m_FRSwerve.getPosition(),
@@ -97,7 +97,7 @@ public class SwerveDrive implements Subsystem {
     }
 
     public Rotation2d getHeading() {
-        return Rotation2d.fromDegrees(m_gyro.getAngle());
+        return Rotation2d.fromDegrees(m_gyro.getAngle() + 90);
     }
 
     public double getTurnRate() {
@@ -135,7 +135,7 @@ public class SwerveDrive implements Subsystem {
                 m_RRSwerve.getState() }); 
 
         m_odometry.update(
-            Rotation2d.fromRadians(((m_gyro.getAngle()) * Math.PI)/180), 
+            getHeading(), 
             new SwerveModulePosition[] { 
                 m_FLSwerve.getPosition(),
                 m_FRSwerve.getPosition(), 
@@ -161,10 +161,8 @@ public class SwerveDrive implements Subsystem {
      * Command for driving relative to field
      */
     public void driveFieldRelative(double xSpeed, double ySpeed, double rot) {
-        SmartDashboard.putNumber("Gyro Position", m_gyro.getAngle() * Math.PI / 180);
-        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed, ySpeed, rot,
-                Rotation2d.fromRadians((m_gyro.getAngle() + 90) * Math.PI / 180));
-        SmartDashboard.putNumber("gyro", m_gyro.getAngle());
+        SmartDashboard.putNumber("Gyro Position", getHeading().getDegrees());
+        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed, ySpeed, rot, getHeading());
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(moduleStates);
     }
@@ -175,7 +173,7 @@ public class SwerveDrive implements Subsystem {
      * @param speeds
      */
     public void driveRobotRelative(ChassisSpeeds speeds) {
-        SmartDashboard.putNumber("gyro", m_gyro.getAngle());
+        SmartDashboard.putNumber("gyro", getHeading().getDegrees());
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
         setModuleStates(moduleStates);
     }
@@ -213,7 +211,7 @@ public class SwerveDrive implements Subsystem {
     }
 
     public void resetPose(Pose2d pose) {
-        m_odometry.resetPosition(Rotation2d.fromRadians(((m_gyro.getAngle()) * Math.PI)/180), getModulePositions(), pose);
+        m_odometry.resetPosition(getHeading(), getModulePositions(), pose);
     }
 
     public ChassisSpeeds getCurrentRobotRelativeSpeeds() {

@@ -17,6 +17,7 @@ import edu.wpi.first.cameraserver.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 
 import frc.robot.Constants.*;
@@ -84,7 +85,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    // CommandScheduler.getInstance().run();
+    CommandScheduler.getInstance().run();
     // double v = PD.getVoltage();
     // voltage.add(v);
     // SmartDashboard.putNumber("voltage", v);
@@ -208,8 +209,11 @@ public class Robot extends TimedRobot {
   /** This function is called once when test mode is enabled. */
   @Override
   public void testInit() {
+    Field2d field = new Field2d();
     SmartDashboard.putData("Limelight Field", limelightField);
     m_elevator.teleopInit(); 
+    SmartDashboard.putData(field);
+    field.setRobotPose(new Pose2d( new Translation2d(10, 7), new Rotation2d()));
     // m_elevator.changeCommand(ElevatorConstants.kElevatorManual);
   }
 
@@ -222,6 +226,7 @@ public class Robot extends TimedRobot {
     }
 
     try { limelightField.setRobotPose(m_visionSystem.getRobotPose(Rotation2d.fromDegrees(0)).get(0)); } catch (Exception e) {}
+    
     
     // m_elevator.manual(m_HelperStick.getRawAxis(2), m_HelperStick.getRawAxis(3));
     SmartDashboard.putNumber("Right Elevator Position", m_elevator.getPositions()[0]);

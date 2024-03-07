@@ -102,17 +102,11 @@ public class SwerveModule {
         m_drivingEncoder.setPosition(0);
     }
 
-    public void runModuleOptimised(SwerveModuleState state) {
+    public void runModulePowerControl(SwerveModuleState state) {
         SwerveModuleState optimised = SwerveModuleState.optimize(state, getTurningAngle());
 
-        testModule(optimised.angle.getDegrees(), optimised.speedMetersPerSecond);
-    }
-
-    public void testModule(double angle, double speed) {
-
-        m_drivingSparkMax.set(driveDirection*speed);
- 
-        m_turningSparkMax.set(-m_turningPIDController.calculate(getTurningAngle().getDegrees(), angle));
+        m_drivingSparkMax.set(driveDirection * optimised.speedMetersPerSecond);
+        m_turningSparkMax.set(-m_turningPIDController.calculate(getTurningAngle().getDegrees(), optimised.angle.getDegrees()));
     }
 
     public void stopModule() {

@@ -8,12 +8,9 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.pathplanner.lib.util.GeometryUtil;
 
 import frc.robot.Constants.ModuleConstants;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import java.util.Random;
 
 public class SwerveModule {
     private final CANSparkMax m_drivingSparkMax;
@@ -25,11 +22,6 @@ public class SwerveModule {
     private final SparkPIDController m_drivingPIDController;
     private final PIDController m_turningPIDController;
 
-    private final Timer clock;
-    private boolean turning = false;
-    private double currentTime = 0;
-    private double startingDirection = 0;
-    private Random rand = new Random();
     private double driveDirection = 1;
 
 
@@ -78,8 +70,6 @@ public class SwerveModule {
         m_turningSparkMax.burnFlash();
 
         m_drivingEncoder.setPosition(0);
-
-        clock = new Timer();
     }
 
     public Rotation2d getTurningAngle() {

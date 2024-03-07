@@ -142,16 +142,9 @@ public class VisionSubsystem extends SubsystemBase {
       var camera = entry.getKey();
       for (PhotonTrackedTarget tag : entry.getValue()) {
         var id = tag.getFiducialId();
-        // x
-        var pitchAngle = tag.getPitch() + camera.pitchOffest;
-        // z
-        var yawAngle = tag.getYaw();
-        var tagHeight = tagOffset.get(id);
-
-        var tempxDist = (tagHeight - camera.zOffset) / Math.tan(pitchAngle * Math.PI / 180);
-
-        Rotation2d rotation = new Rotation2d(robotAngle.getDegrees() + yawAngle + camera.yawOffset);
-        Translation2d translation = new Translation2d(tempxDist, rotation);
+        
+        Rotation2d rotation = new Rotation2d(robotAngle.getDegrees() + getYawAngle(tag, camera));
+        Translation2d translation = new Translation2d(getDistanceMagnitude(tag, camera), rotation);
         translation = translation.plus(new Translation2d(camera.xOffset, camera.yOffset).rotateBy(rotation));
         
         out.put(Integer.valueOf(id), new Transform2d(translation, Rotation2d.fromDegrees(0)));
@@ -171,6 +164,16 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     return poses;
+  }
+
+  public double getDistanceMagnitude(PhotonTrackedTarget target, Camera camera) {
+    var tagHeight = tagOffset.get(target.getFiducialId());
+    var tempxDist = (tagHeight - camera.zOffset) / Math.tan((target.getPitch() + camera.pitchOffest) * Math.PI / 180);
+    return tempxDist;
+  } 
+
+  public double getYawAngle (PhotonTrackedTarget target, Camera camera) {
+    return target.getYaw() + camera.yawOffset;
   }
 
 }

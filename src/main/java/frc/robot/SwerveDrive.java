@@ -180,13 +180,6 @@ public class SwerveDrive implements Subsystem {
         setModuleStates(moduleStates);
     }
 
-    public void PIDTuningHelper(double angle, double speed) {
-        m_FRSwerve.testModule(angle, speed);
-        m_FLSwerve.testModule(angle, speed);
-        m_RLSwerve.testModule(angle, speed);
-        m_RRSwerve.testModule(angle, speed);
-    }
-
     /**
      * Stops wheels from moving
      */

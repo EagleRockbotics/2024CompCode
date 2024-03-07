@@ -112,4 +112,54 @@ public class ShooterIntake {
         m_intake.setAngle(ShooterIntakeConstants.kIntakeHigherPosition);
         m_shooter.setAngle(ShooterIntakeConstants.kShooterClimbPosition);
     }
+
+    /**
+     * Function to load a note for working with a set angle shooter
+     */
+    public void setAngleLoadShot() {
+        if (!m_intake.getLimitSwitch()) {
+            m_intake.setAngle(ShooterIntakeConstants.kIntakeLowerPosition);
+            m_shooter.setAngle(ShooterIntakeConstants.kShooterIntakePosition);
+            m_intake.runIntake(1);
+            m_shooter.runShooter(0);
+            if (m_shooter.atSetPoint()) {
+                m_shooter.runRotatingMotor(0);
+            }
+            if (m_intake.atSetPoint()) {
+                m_intake.runPitchMotor(0);
+            }
+        } else {
+            m_intake.setAngle(ShooterIntakeConstants.kIntakeHigherPosition);
+            m_shooter.setAngle(ShooterIntakeConstants.kShooterIntakePosition);
+            m_intake.runIntake(0);
+            m_shooter.runShooter(0);
+            if (m_shooter.atSetPoint()) {
+                m_shooter.runRotatingMotor(0);
+            }
+            if (m_intake.atSetPoint()) {
+                m_intake.runPitchMotor(0);
+            }
+        }
+    }
+
+    /**
+     * Function to shoot a note for a set angle shooter
+     * @param shoot whether or not to shoot
+     */
+    public void setAngleShoot(boolean shoot) {
+        m_intake.setAngle(ShooterIntakeConstants.kIntakeHigherPosition);
+        m_shooter.setAngle(ShooterIntakeConstants.kShooterIntakePosition);
+        m_shooter.runShooter(1);
+        if (m_shooter.atSetPoint()) {
+            m_shooter.runRotatingMotor(0);
+        }
+        if (m_intake.atSetPoint()) {
+            m_intake.runPitchMotor(0);
+        }
+        if (shoot) {
+            m_intake.runIntake(-1);
+        } else {
+            m_intake.runIntake(0);
+        }
+    }
 }

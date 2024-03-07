@@ -132,7 +132,7 @@ public final class Constants {
 
     public static double kDrivingMotorFreeSpeedRps = kFreeSpeedRpm / 60;
     // public static double kWheelDiameterMeters = .1;
-    public static double kWheelCircumferenceMeters = .305;
+    public static double kWheelCircumferenceMeters = .314;
 
 
     // public static double kDrivingMotorReduction = (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);

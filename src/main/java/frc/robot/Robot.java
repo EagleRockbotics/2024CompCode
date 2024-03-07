@@ -173,7 +173,7 @@ public class Robot extends TimedRobot {
     double[] driveValues = m_swerveDrive.JoystickConverter(m_DriveStick.getRawAxis(0), m_DriveStick.getRawAxis(1), m_DriveStick.getRawAxis(4));
     
     if(m_HelperStick.getRawButtonReleased(3)) {
-      m_swerveDrive.zeroHeading();;
+      m_swerveDrive.zeroHeading();
     }
 
     m_swerveDrive.driveFieldRelative(

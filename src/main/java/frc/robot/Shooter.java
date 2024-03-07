@@ -16,7 +16,6 @@ public class Shooter {
     private final CANSparkMax m_intakeMotor;
     private final CANcoder m_rotatingEncoder;
     private final PIDController m_rotatingController;
-    // the current distance from target, should be continually updated if possible
 
     /**
      * Constructor that uses constants defined in Constants.ShooterConstants

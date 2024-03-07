@@ -134,8 +134,15 @@ public class SwerveDrive implements Subsystem {
         publisherBlue.set(new SwerveModuleState[] { m_FLSwerve.getState(), m_FRSwerve.getState(), m_RLSwerve.getState(),
                 m_RRSwerve.getState() }); 
 
-        m_odometry.update(Rotation2d.fromRadians(((m_gyro.getAngle()) * Math.PI)/180), new SwerveModulePosition[] { m_FLSwerve.getPosition(),
-                m_FRSwerve.getPosition(), m_RLSwerve.getPosition(), m_RRSwerve.getPosition() });
+        m_odometry.update(
+            Rotation2d.fromRadians(((m_gyro.getAngle()) * Math.PI)/180), 
+            new SwerveModulePosition[] { 
+                m_FLSwerve.getPosition(),
+                m_FRSwerve.getPosition(), 
+                m_RLSwerve.getPosition(), 
+                m_RRSwerve.getPosition() 
+            }
+        );
         m_field2d.setRobotPose(m_odometry.getPoseMeters());
 
     }

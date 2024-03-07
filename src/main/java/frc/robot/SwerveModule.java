@@ -6,13 +6,8 @@ import edu.wpi.first.math.controller.PIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
-
-import edu.wpi.first.networktables.NetworkTableInstance;
 
 import frc.robot.Constants.ModuleConstants;
 import edu.wpi.first.wpilibj.Timer;
@@ -36,8 +31,6 @@ public class SwerveModule {
     private Random rand = new Random();
     private boolean driveReversal;
 
-    // private SwerveModuleState m_desiredState = new SwerveModuleState(0.0, new
-    // Rotation2d());
 
     public SwerveModule(int drivingCANId, int turningCANId, int encoderNum, boolean reversedDrive,
             boolean reversedSteer) {
@@ -54,12 +47,7 @@ public class SwerveModule {
         m_drivingEncoder = m_drivingSparkMax.getEncoder();
         m_turningEncoder = new CANcoder(encoderNum);
 
-        // CANcoderConfiguration EncoderConfig = new CANcoderConfiguration();
-        // EncoderConfig.MagnetSensor.AbsoluteSensorRange =
-        // AbsoluteSensorRangeValue.Unsigned_0To1;
-
-        // m_turningEncoder.getConfigurator().apply(EncoderConfig);
-
+        
         m_turningPIDController = new PIDController(ModuleConstants.kTurningP, ModuleConstants.kTurningI,
                 ModuleConstants.kTurningD);
         m_drivingPIDController = m_drivingSparkMax.getPIDController();
@@ -70,8 +58,7 @@ public class SwerveModule {
 
         m_turningPIDController.enableContinuousInput(ModuleConstants.kTurningEncoderPositionPIDMinInput,
                 ModuleConstants.kTurningEncoderPositionPIDMaxInput);
-        // m_turningPIDController.setTolerance(10);
-
+        
         m_drivingPIDController.setP(ModuleConstants.kDrivingP);
         m_drivingPIDController.setI(ModuleConstants.kDrivingI);
         m_drivingPIDController.setD(ModuleConstants.kDrivingD);

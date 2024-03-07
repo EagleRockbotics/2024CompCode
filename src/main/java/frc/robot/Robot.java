@@ -14,19 +14,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.cameraserver.*;
 
-import java.util.concurrent.TimeUnit;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.proto.Controller;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.units.Power;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Timer;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
 import java.util.ArrayList;
@@ -166,7 +158,6 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    //m_DriveStick.setRumble(RumbleType.kBothRumble, 1);
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -225,17 +216,10 @@ public class Robot extends TimedRobot {
 
     try { limelightField.setRobotPose(m_visionSystem.getRobotPose(Rotation2d.fromDegrees(0)).get(0)); } catch (Exception e) {}
     
-    m_elevator.manual(m_HelperStick.getRawAxis(2), m_HelperStick.getRawAxis(3));
+    // m_elevator.manual(m_HelperStick.getRawAxis(2), m_HelperStick.getRawAxis(3));
     SmartDashboard.putNumber("Right Elevator Position", m_elevator.getPositions()[0]);
     SmartDashboard.putNumber("Left Elevator Position", m_elevator.getPositions()[1]);
 
-    // double angle = (Math.atan2(m_DriveStick.getRawAxis(1), m_DriveStick.getRawAxis(0)) * 180 / Math.PI) - 90;
-    // double speed = Math.sqrt(Math.pow(m_DriveStick.getRawAxis(1), 2) + Math.pow(m_DriveStick.getRawAxis(0), 2));
-    // if (Math.abs(speed) > ModuleConstants.kDeadzone) {
-    //   m_swerveDrive.PIDTuningHelper(angle, speed);
-    // } else {
-    //   m_swerveDrive.stopModules();
-    // }
   }
 
   /** This function is called once when the robot is first started up. */

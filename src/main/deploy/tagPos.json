@@ -1,1 +1,18 @@
-{"testTag" : {"id" : 1, "x" : 8, "y" : 3.5, "rotation" : 0}}
+{
+    "one" : {"id" : 1, "x" : 15.08, "y" : 0.25, "rotation" : 0},
+    "two" : {"id" : 2, "x" : 16.19, "y" : 0.88, "rotation" : 0},
+    "three" : {"id" : 3, "x" : 16.58, "y" : 4.98, "rotation" : 0},
+    "four" : {"id" : 4, "x" : 16.58, "y" : 5.55, "rotation" : 0},
+    "five" : {"id" : 5, "x" : 14.7, "y" : 8.20, "rotation" : 0},
+    "six" : {"id" : 6, "x" : 1.84, "y" : 8.20, "rotation" : 0},
+    "seven" : {"id" : 7, "x" : -0.04, "y" : 5.55, "rotation" : 0},
+    "eight" : {"id" : 8, "x" : -0.04, "y" : 4.98, "rotation" : 0},
+    "nine" : {"id" : 9, "x" : 0.36, "y" : 0.88, "rotation" : 0},
+    "ten" : {"id" : 10, "x" : 1.46, "y" : 0.25, "rotation" : 0},
+    "eleven" : {"id" : 11, "x" : 11.9, "y" : 3.71, "rotation" : 0},
+    "twelve" : {"id" : 12, "x" : 11.9, "y" : 4.5, "rotation" : 0},
+    "thirteen" : {"id" : 13, "x" : 11.22, "y" : 4.11, "rotation" : 0},
+    "fourteen" : {"id" : 14, "x" : 5.32, "y" : 4.11, "rotation" : 0},
+    "fifteen" : {"id" : 15, "x" : 4.64, "y" : 4.5, "rotation" : 0},
+    "sixteen" : {"id" : 16, "x" : 4.64, "y" : 3.71, "rotation" : 0}
+}

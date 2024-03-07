@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,9 +70,9 @@ class Camera {
     pitchOffest = pOffset;
     yawOffset = yaOffset;
     rollOffset = rOffset;
-    // side-side
-    xOffset = xoffset;
     // forward-backward
+    xOffset = xoffset;
+    // side-side
     yOffset = yoffset;
     // up-down
     zOffset = zoffset;
@@ -88,7 +87,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   HashMap<Camera, List<PhotonTrackedTarget>> tags = new HashMap<>();
 
-  List<Camera> cameras = new ArrayList();
+  List<Camera> cameras = new ArrayList<>();
 
   public VisionSubsystem() {
     try {
@@ -129,12 +128,6 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     updateTagList();
-    // for (Map.Entry<Integer, Transform2d> entry :
-    // getDistances(Rotation2d.fromDegrees(0)).entrySet()) {
-    // System.out.println("ID:" + entry.getKey().toString() + " Distances:" + new
-    // Double(entry.getValue().getX()).toString() + " ," + new
-    // Double(entry.getValue().getY()).toString());
-    // }
   }
 
   void updateTagList() {
@@ -156,11 +149,12 @@ public class VisionSubsystem extends SubsystemBase {
         var tagHeight = tagOffset.get(id);
 
         var tempxDist = (tagHeight - camera.zOffset) / Math.tan(pitchAngle * Math.PI / 180);
-        var yDist = (Math.sin(yawAngle * Math.PI / 180) * tempxDist) + camera.yOffset;
-        var xDist = (Math.cos(tempxDist * Math.PI / 180) * tempxDist) + camera.xOffset;
+
+        Rotation2d rotation = new Rotation2d(robotAngle.getDegrees() + yawAngle + camera.yawOffset);
+        Translation2d translation = new Translation2d(tempxDist, rotation);
+        translation = translation.plus(new Translation2d(camera.xOffset, camera.yOffset).rotateBy(rotation));
         
-        out.put(Integer.valueOf(id), new Transform2d(new Translation2d(xDist, yDist)
-            .rotateBy(Rotation2d.fromDegrees(robotAngle.getDegrees() + camera.yawOffset)), Rotation2d.fromDegrees(0)));
+        out.put(Integer.valueOf(id), new Transform2d(translation, Rotation2d.fromDegrees(0)));
       }
     }
     return out;

@@ -138,7 +138,7 @@ public class Robot extends TimedRobot {
     if (joshAutoChooser.getSelected() == "empty") {
       m_swerveDrive.driveFieldRelative(0, 0, 0);
     } else if (joshAutoChooser.getSelected() == "driveFwd") {
-      if (Math.abs(m_swerveDrive.getPose().getX()) <= (3)) { //6 meters, actually 7.5; 3 meters, actually 5.96 meters
+      if (Math.abs(m_swerveDrive.getPose().getX()) <= (6)) { //6 meters, actually 7.5; 3 meters, actually 5.96 meters
         SmartDashboard.putNumber("x Position", m_swerveDrive.getPose().getX());
         m_swerveDrive.driveFieldRelative(0, -.1, 0);
       } else {

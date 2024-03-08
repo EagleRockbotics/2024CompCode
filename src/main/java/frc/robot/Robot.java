@@ -129,7 +129,7 @@ public class Robot extends TimedRobot {
     if (joshAutoChooser.getSelected() == "empty") {
       m_swerveDrive.driveFieldRelative(0, 0, 0);
     } else if (joshAutoChooser.getSelected() == "driveFwd") {
-      if (Math.abs(m_swerveDrive.getPose().getX()) <= (3)) { //6 meters, actually 7.5; 3 meters, actually 5.96 meters
+      if (Math.abs(m_swerveDrive.getPose().getX()) <= (6)) { //6 meters, actually 7.5; 3 meters, actually 5.96 meters
         SmartDashboard.putNumber("x Position", m_swerveDrive.getPose().getX());
         m_swerveDrive.driveFieldRelative(0, -.25, 0);
       } else {
@@ -161,35 +161,16 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     m_elevator.manual(m_HelperStick.getRawAxis(2), m_HelperStick.getRawAxis(3));
 
-    var xDriveSpeed = -m_DriveStick.getRawAxis(0) * ControllerConstants.kDrivingSpeed;
-
-    var yDriveSpeed = m_DriveStick.getRawAxis(1) * ControllerConstants.kDrivingSpeed;
-    if (m_DriveStick.getRawButton(5)) {
-      yDriveSpeed = m_DriveStick.getRawAxis(1);
-    }
+    double[] driveValues = m_swerveDrive.JoystickConverter(m_DriveStick.getRawAxis(0), m_DriveStick.getRawAxis(1), m_DriveStick.getRawAxis(4));
     
-    var rotDriveSpeed = -m_DriveStick.getRawAxis(4) * Math.PI * ControllerConstants.kSteerSpeed;
-
     if(m_HelperStick.getRawButtonReleased(3)) {
-      m_swerveDrive.m_gyro.reset();
-    }
-
-    if (Math.abs(m_DriveStick.getRawAxis(4)) <= ControllerConstants.kSteerDeadzone) {
-      rotDriveSpeed = 0;
-    } 
-
-    if (Math.abs(m_DriveStick.getRawAxis(1)) <= ControllerConstants.kDriveDeadzone) {
-      yDriveSpeed = 0;
-    }
-
-    if (Math.abs(m_DriveStick.getRawAxis(0)) <= ControllerConstants.kDriveDeadzone) {
-      xDriveSpeed = 0;
+      m_swerveDrive.zeroHeading();
     }
 
     m_swerveDrive.driveFieldRelative(
-        xDriveSpeed, 
-        yDriveSpeed,
-        rotDriveSpeed);
+        driveValues[0], 
+        driveValues[1],
+        driveValues[2]);
   }
 
   /** This function is called once when the robot is disabled. */

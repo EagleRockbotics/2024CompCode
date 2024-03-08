@@ -11,9 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.cameraserver.*;
-
-
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -123,13 +120,12 @@ public class Robot extends TimedRobot {
   }
 
   /** This function is called periodically during autonomous. */
-  //8.28-1.55
   @Override
   public void autonomousPeriodic() {
     if (joshAutoChooser.getSelected() == "empty") {
       m_swerveDrive.driveFieldRelative(0, 0, 0);
     } else if (joshAutoChooser.getSelected() == "driveFwd") {
-      if (Math.abs(m_swerveDrive.getPose().getX()) <= (6)) { //6 meters, actually 7.5; 3 meters, actually 5.96 meters
+      if (Math.abs(m_swerveDrive.getPose().getX()) <= (6)) {
         SmartDashboard.putNumber("x Position", m_swerveDrive.getPose().getX());
         m_swerveDrive.driveFieldRelative(0, -.25, 0);
       } else {

@@ -49,7 +49,6 @@ public class Robot extends TimedRobot {
 
   private static Field2d limelightField = new Field2d();
 
-  private static PowerDistribution PD;
   private ArrayList<Double> voltage = new ArrayList<Double>();
 
 
@@ -78,8 +77,6 @@ public class Robot extends TimedRobot {
     CameraServer.startAutomaticCapture(0);
 
     m_swerveDrive.m_gyro.reset();
-
-    PD = new PowerDistribution(1, ModuleType.kRev);
   }
 
   /**
@@ -95,9 +92,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    double v = PD.getVoltage();
-    voltage.add(v);
-    SmartDashboard.putNumber("voltage", v);
   }
 
   /**
@@ -228,17 +222,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    m_visionSystem.periodic();
-    if(m_DriveStick.getRawButtonReleased(10)) {
-      m_swerveDrive.resetEncoders();
-    }
-
-    try { limelightField.setRobotPose(m_visionSystem.getRobotPose(Rotation2d.fromDegrees(0)).get(0)); } catch (Exception e) {}
     
-    // m_elevator.manual(m_HelperStick.getRawAxis(2), m_HelperStick.getRawAxis(3));
-    SmartDashboard.putNumber("Right Elevator Position", m_elevator.getPositions()[0]);
-    SmartDashboard.putNumber("Left Elevator Position", m_elevator.getPositions()[1]);
-
   }
 
   /** This function is called once when the robot is first started up. */

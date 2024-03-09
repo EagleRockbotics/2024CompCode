@@ -47,6 +47,8 @@ public class Robot extends TimedRobot {
 
   private ArrayList<Double> voltage = new ArrayList<Double>();
 
+  private static ShooterIntake m_ShooterIntake;
+
 
   // autonomous
   private SendableChooser<String> joshAutoChooser;
@@ -71,6 +73,8 @@ public class Robot extends TimedRobot {
     m_HelperStick = new Joystick(ControllerConstants.kHelperJoystickPort);
     m_elevator = new Elevator();
     CameraServer.startAutomaticCapture(0);
+
+    m_ShooterIntake = new ShooterIntake();
 
     m_swerveDrive.m_gyro.reset();
   }
@@ -218,7 +222,17 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    
+    if (m_DriveStick.getRawButton(1)) {
+      m_ShooterIntake.m_shooter.runShooter(1);
+    }
+    if (m_DriveStick.getRawButton(2)) {
+      m_ShooterIntake.m_shooter.runIntake(1);
+    }
+    if (m_DriveStick.getRawButton(3)) {
+      m_ShooterIntake.m_intake.runIntake(1);
+    }
+    m_ShooterIntake.m_shooter.runRotatingMotor(m_DriveStick.getRawAxis(1));
+    m_ShooterIntake.m_intake.runPitchMotor(m_DriveStick.getRawAxis(1));
   }
 
   /** This function is called once when the robot is first started up. */

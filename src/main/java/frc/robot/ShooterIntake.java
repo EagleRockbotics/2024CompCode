@@ -3,14 +3,12 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Shooter;
-import frc.robot.Intake;
 import frc.robot.Constants.*;
 
 public class ShooterIntake {
 
-    private static Shooter m_shooter;
-    private static Intake m_intake;
+    public static Shooter m_shooter;
+    public static Intake m_intake;
     private static Timer timer;
 
     /**

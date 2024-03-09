@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -12,7 +13,7 @@ import frc.robot.Constants.ShooterConstants;
 public class Shooter {
     private final CANSparkMax m_shootingMotorLeft;
     private final CANSparkMax m_shootingMotorRight;
-    private final CANSparkMax m_rotatingMotor;
+    private final CANSparkFlex m_rotatingMotor;
     private final CANSparkMax m_intakeMotor;
     private final CANcoder m_rotatingEncoder;
     private final PIDController m_rotatingController;
@@ -23,7 +24,7 @@ public class Shooter {
     public Shooter() {
         m_shootingMotorLeft = new CANSparkMax(ShooterConstants.kShootingLeftCanId, MotorType.kBrushless);
         m_shootingMotorRight = new CANSparkMax(ShooterConstants.kShootingRightCanId, MotorType.kBrushless);
-        m_rotatingMotor = new CANSparkMax(ShooterConstants.kShootingRotatingCanId, MotorType.kBrushless);
+        m_rotatingMotor = new CANSparkFlex(ShooterConstants.kShootingRotatingCanId, MotorType.kBrushless);
         m_intakeMotor = new CANSparkMax(ShooterConstants.kShooterIntakeCanId, MotorType.kBrushless);
         m_rotatingEncoder = new CANcoder(ShooterConstants.kShooterRotatingEncoderCanId);
         m_rotatingController = new PIDController(ShooterConstants.kShootingRotatingP, ShooterConstants.kShootingRotatingI, ShooterConstants.kShootingRotatingD);

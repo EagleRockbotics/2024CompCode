@@ -232,7 +232,9 @@ public class Robot extends TimedRobot {
       m_ShooterIntake.m_intake.runIntake(1);
     }
     m_ShooterIntake.m_shooter.runRotatingMotor(m_DriveStick.getRawAxis(1));
-    m_ShooterIntake.m_intake.runPitchMotor(m_DriveStick.getRawAxis(1));
+    SmartDashboard.putNumber("shooter pivot power", m_DriveStick.getRawAxis(1));
+    m_ShooterIntake.m_intake.runPitchMotor(m_DriveStick.getRawAxis(5));
+    SmartDashboard.putNumber("intake pivot power", m_DriveStick.getRawAxis(5));
   }
 
   /** This function is called once when the robot is first started up. */

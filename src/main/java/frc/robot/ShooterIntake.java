@@ -28,12 +28,12 @@ public class ShooterIntake {
             m_intake.setAngle(ShooterIntakeConstants.kIntakeLowerPosition);
             m_intake.runIntake(1);
             m_shooter.setAngle(ShooterIntakeConstants.kShooterIntakePosition);
-            m_shooter.runShooter(0);
+            m_shooter.runShooter(.1);
             m_shooter.runIntake(0);
         } else {
             m_intake.setAngle(ShooterIntakeConstants.kIntakeHigherPosition);
             m_shooter.setAngle(ShooterIntakeConstants.kShooterIntakePosition);
-            m_shooter.runShooter(0);
+            m_shooter.runShooter(.1);
             if (m_intake.atSetPoint() && m_shooter.atSetPoint()) {
                 m_intake.runPitchMotor(0);
                 m_shooter.runRotatingMotor(0);
@@ -105,7 +105,7 @@ public class ShooterIntake {
 
     public void setClimb() {
         m_shooter.runIntake(0);
-        m_shooter.runShooter(0);
+        m_shooter.runShooter(.1);
         m_intake.runIntake(0);
         m_intake.setAngle(ShooterIntakeConstants.kIntakeHigherPosition);
         m_shooter.setAngle(ShooterIntakeConstants.kShooterClimbPosition);
@@ -119,7 +119,7 @@ public class ShooterIntake {
             m_intake.setAngle(ShooterIntakeConstants.kIntakeLowerPosition);
             m_shooter.setAngle(ShooterIntakeConstants.kShooterIntakePosition);
             m_intake.runIntake(1);
-            m_shooter.runShooter(0);
+            m_shooter.runShooter(.1);
             if (m_shooter.atSetPoint()) {
                 m_shooter.runRotatingMotor(0);
             }
@@ -130,7 +130,7 @@ public class ShooterIntake {
             m_intake.setAngle(ShooterIntakeConstants.kIntakeHigherPosition);
             m_shooter.setAngle(ShooterIntakeConstants.kShooterIntakePosition);
             m_intake.runIntake(0);
-            m_shooter.runShooter(0);
+            m_shooter.runShooter(.1);
             if (m_shooter.atSetPoint()) {
                 m_shooter.runRotatingMotor(0);
             }

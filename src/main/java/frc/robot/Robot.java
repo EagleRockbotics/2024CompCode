@@ -47,7 +47,8 @@ public class Robot extends TimedRobot {
 
   private ArrayList<Double> voltage = new ArrayList<Double>();
 
-  private static ShooterIntake m_ShooterIntake;
+  private static Shooter m_shooter;
+  private static Intake m_intake;
 
 
   // autonomous
@@ -74,7 +75,8 @@ public class Robot extends TimedRobot {
     m_elevator = new Elevator();
     CameraServer.startAutomaticCapture(0);
 
-    m_ShooterIntake = new ShooterIntake();
+    m_shooter = new Shooter();
+    m_intake = new Intake();
 
     m_swerveDrive.m_gyro.reset();
   }
@@ -223,17 +225,17 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     if (m_DriveStick.getRawButton(1)) {
-      m_ShooterIntake.m_shooter.runShooter(1);
+      m_shooter.runShooter(1);
     }
     if (m_DriveStick.getRawButton(2)) {
-      m_ShooterIntake.m_shooter.runIntake(1);
+      m_shooter.runIntake(1);
     }
     if (m_DriveStick.getRawButton(3)) {
-      m_ShooterIntake.m_intake.runIntake(1);
+      m_intake.runIntake(1);
     }
-    m_ShooterIntake.m_shooter.runRotatingMotor(m_DriveStick.getRawAxis(1));
+    m_shooter.runRotatingMotor(m_DriveStick.getRawAxis(1));
     SmartDashboard.putNumber("shooter pivot power", m_DriveStick.getRawAxis(1));
-    m_ShooterIntake.m_intake.runPitchMotor(m_DriveStick.getRawAxis(5));
+    m_intake.runPitchMotor(m_DriveStick.getRawAxis(5));
     SmartDashboard.putNumber("intake pivot power", m_DriveStick.getRawAxis(5));
   }
 

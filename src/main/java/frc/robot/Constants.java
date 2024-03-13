@@ -52,8 +52,8 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
-    public static int kPitchMotorCanId = 25;
-    public static int kIntakeMotorCanId = 26;
+    public static int kPitchMotorCanId = 20;
+    public static int kIntakeMotorCanId = 18;
     public static int kPitchEncoderCanId = 27;
     public static int kLimitSwitchPort = 0;
     public static double kPitchP = 0;
@@ -68,7 +68,7 @@ public final class Constants {
     public static double kShootingRotatingI = 0;
     public static double kShootingRotatingD = 0;
     public static double kShootingKG = 0.07; // power needed to keep motor steay when facing straight out
-    public static int kShootingRotatingCanId = 9;
+    public static int kShootingRotatingCanId = 21;
     public static int kShooterIntakeCanId = 13;
     public static int kShootingLeftCanId = 10;
     public static int kShootingRightCanId = 15;

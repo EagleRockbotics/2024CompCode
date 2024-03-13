@@ -223,17 +223,17 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     if (m_DriveStick.getRawButton(1)) {
-      m_ShooterIntake.m_shooter.runShooter(1);
+      ShooterIntake.m_shooter.runShooter(1);
     }
     if (m_DriveStick.getRawButton(2)) {
-      m_ShooterIntake.m_shooter.runIntake(1);
+      ShooterIntake.m_shooter.runIntake(1);
     }
     if (m_DriveStick.getRawButton(3)) {
-      m_ShooterIntake.m_intake.runIntake(1);
+      ShooterIntake.m_intake.runIntake(1);
     }
-    m_ShooterIntake.m_shooter.runRotatingMotor(m_DriveStick.getRawAxis(1));
+    ShooterIntake.m_shooter.runRotatingMotor(m_DriveStick.getRawAxis(1));
     SmartDashboard.putNumber("shooter pivot power", m_DriveStick.getRawAxis(1));
-    m_ShooterIntake.m_intake.runPitchMotor(m_DriveStick.getRawAxis(5));
+    ShooterIntake.m_intake.runPitchMotor(m_DriveStick.getRawAxis(5));
     SmartDashboard.putNumber("intake pivot power", m_DriveStick.getRawAxis(5));
   }
 

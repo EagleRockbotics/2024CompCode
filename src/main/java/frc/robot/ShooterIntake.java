@@ -7,8 +7,8 @@ import frc.robot.Constants.*;
 
 public class ShooterIntake {
 
-    public static Shooter m_shooter;
-    public static Intake m_intake;
+    private static Shooter m_shooter;
+    private static Intake m_intake;
     private static Timer timer;
 
     /**

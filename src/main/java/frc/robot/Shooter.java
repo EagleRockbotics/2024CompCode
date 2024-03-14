@@ -1,7 +1,7 @@
 package frc.robot;
 
 import com.revrobotics.CANSparkFlex;
-import com.revrobotics.CANSparkMax;
+import edu.wpi.first.wpilibj.motorcontrol.Victor;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.math.controller.PIDController;
@@ -11,10 +11,10 @@ import frc.robot.Constants.ShooterConstants;
 
 
 public class Shooter {
-    private final CANSparkMax m_shootingMotorLeft;
-    private final CANSparkMax m_shootingMotorRight;
+    private final Victor m_shootingMotorLeft;
+    private final Victor m_shootingMotorRight;
     private final CANSparkFlex m_rotatingMotor;
-    private final CANSparkMax m_intakeMotor;
+    private final Victor m_intakeMotor;
     private final CANcoder m_rotatingEncoder;
     private final PIDController m_rotatingController;
 
@@ -22,10 +22,10 @@ public class Shooter {
      * Constructor that uses constants defined in Constants.ShooterConstants
      */
     public Shooter() {
-        m_shootingMotorLeft = new CANSparkMax(ShooterConstants.kShootingLeftCanId, MotorType.kBrushless);
-        m_shootingMotorRight = new CANSparkMax(ShooterConstants.kShootingRightCanId, MotorType.kBrushless);
+        m_shootingMotorLeft = new Victor(ShooterConstants.kShootingLeftCanId);
+        m_shootingMotorRight = new Victor(ShooterConstants.kShootingRightCanId);
         m_rotatingMotor = new CANSparkFlex(ShooterConstants.kShootingRotatingCanId, MotorType.kBrushless);
-        m_intakeMotor = new CANSparkMax(ShooterConstants.kShooterIntakeCanId, MotorType.kBrushless);
+        m_intakeMotor = new Victor(ShooterConstants.kShooterIntakeCanId);
         m_rotatingEncoder = new CANcoder(ShooterConstants.kShooterRotatingEncoderCanId);
         m_rotatingController = new PIDController(ShooterConstants.kShootingRotatingP, ShooterConstants.kShootingRotatingI, ShooterConstants.kShootingRotatingD);
         m_rotatingController.setTolerance(ShooterConstants.kShooterTolerance);

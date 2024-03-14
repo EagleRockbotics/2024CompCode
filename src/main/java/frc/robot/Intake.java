@@ -2,7 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DigitalInput;
 
 import com.revrobotics.CANSparkMax;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -18,8 +17,6 @@ public class Intake {
 
     private static PIDController m_pitchController;
 
-    private static DigitalInput m_limitSwitch;
-
     /**
      * Constructor that uses constants in constants file
      */
@@ -28,20 +25,11 @@ public class Intake {
         m_pitchMotor = new CANSparkMax(IntakeConstants.kPitchMotorCanId, MotorType.kBrushless);
         m_pitchEncoder = new CANcoder(IntakeConstants.kPitchEncoderCanId);
         m_pitchController = new PIDController(IntakeConstants.kPitchP, IntakeConstants.kPitchI, IntakeConstants.kPitchD);
-        m_limitSwitch = new DigitalInput(IntakeConstants.kLimitSwitchPort);
         m_pitchController.setTolerance(IntakeConstants.kIntakeTolerance);
     }
 
     public Rotation2d getAngle() {
         return new Rotation2d(m_pitchEncoder.getAbsolutePosition().getValueAsDouble() * 360);
-    }
-
-    /**
-     * Gets the current value of the limit switch
-     * @return whether the limit switch is pressed or not
-     */
-    public boolean getLimitSwitch() {
-        return m_limitSwitch.get();
     }
 
     /**

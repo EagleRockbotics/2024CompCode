@@ -45,14 +45,14 @@ public final class Constants {
 
   public static class ShooterIntakeConstants {
     public static Rotation2d kIntakeLowerPosition = Rotation2d.fromDegrees(-15);   // in degrees
-    public static Rotation2d kShooterIntakePosition = Rotation2d.fromDegrees(-15);  // in degrees
     public static Rotation2d kIntakeHigherPosition = Rotation2d.fromDegrees(100);  // in degrees
-    public static Rotation2d kShooterClimbPosition = Rotation2d.fromDegrees(90);   // in degrees
+    public static Rotation2d kShooterIntakePosition = Rotation2d.fromDegrees(-40);  // in degrees
+    public static Rotation2d kShooterMaxPosition = Rotation2d.fromDegrees(80);
     public static double kShooterVelocity = 5;  // in meters per second
   }
 
   public static class IntakeConstants {
-    public static int kPitchMotorCanId = 20;
+    public static int kPitchMotorCanId = 28;
     public static int kIntakeMotorCanId = 18;
     public static int kPitchEncoderCanId = 27;
     public static int kLimitSwitchPort = 0;

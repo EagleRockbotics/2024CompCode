@@ -70,18 +70,18 @@ public class SwerveDrive implements Subsystem {
                         m_RRSwerve.getPosition()
                 }, new Pose2d(new Translation2d(0, 0), Rotation2d.fromRadians(0)));
 
-        AutoBuilder.configureHolonomic(this::getPose, this::resetPose, this::getCurrentRobotRelativeSpeeds,
-                this::driveRobotRelative, new HolonomicPathFollowerConfig(new PIDConstants(DriveConstants.TkP, DriveConstants.TkI, DriveConstants.TkD),
-                        new PIDConstants(DriveConstants.RkP, DriveConstants.RkI, DriveConstants.RkD), 4.5,
-                        Math.sqrt(Math.pow(DriveConstants.kTrackWidth, 2) + Math.pow(DriveConstants.kWheelBase, 2)),
-                        new ReplanningConfig()),
-                () -> {
-                    var alliance = DriverStation.getAlliance();
-                    if (alliance.isPresent()) {
-                        return alliance.get() == DriverStation.Alliance.Red;
-                    }
-                    return false;
-                }, this);
+        // AutoBuilder.configureHolonomic(this::getPose, this::resetPose, this::getCurrentRobotRelativeSpeeds,
+        //         this::driveRobotRelative, new HolonomicPathFollowerConfig(new PIDConstants(DriveConstants.TkP, DriveConstants.TkI, DriveConstants.TkD),
+        //                 new PIDConstants(DriveConstants.RkP, DriveConstants.RkI, DriveConstants.RkD), 4.5,
+        //                 Math.sqrt(Math.pow(DriveConstants.kTrackWidth, 2) + Math.pow(DriveConstants.kWheelBase, 2)),
+        //                 new ReplanningConfig()),
+        //         () -> {
+        //             var alliance = DriverStation.getAlliance();
+        //             if (alliance.isPresent()) {
+        //                 return alliance.get() == DriverStation.Alliance.Red;
+        //             }
+        //             return false;
+        //         }, this);
         SmartDashboard.putData("Field View", m_field2d);
 
         autoTargetingController = new PIDController(DriveConstants.kAutoTargettingP, DriveConstants.kAutoTargettingI,
@@ -168,8 +168,9 @@ public class SwerveDrive implements Subsystem {
      * 
      * @param speeds
      */
-    public void driveRobotRelative(ChassisSpeeds speeds) {
+    public void driveRobotRelative(double xSpeed, double ySpeed, double rot) {
         SmartDashboard.putNumber("gyro", getHeading().getDegrees());
+        ChassisSpeeds speeds = new ChassisSpeeds(ySpeed, -xSpeed, rot);
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
         setModuleStates(moduleStates);
     }

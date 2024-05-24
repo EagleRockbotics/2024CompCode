@@ -9,6 +9,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 
 /**
@@ -23,6 +24,7 @@ public final class Constants {
   public static String APRILTAG_JSON_NAME = "tags.json";
   public static String CAMERA_JSON_NAME = "cams.json";
   public static String APRILTAG_POSITION_JSON_NAME = "tagPos.json";
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
@@ -30,7 +32,7 @@ public final class Constants {
   public static class ElevatorConstants {
     public static int kRightElevatorCanID = 19;
     public static int kLeftElevatorCanID = 17;
-    public static int kRightElevatorEncoderCanId = 20;
+    public static int kRightElevatorEncoderCanId = 16;
     public static int kLeftElevatorEncoderCanId = 21;
     public static double kElevatorMaxHeight = 0;
     public static double kElevatorDownHeight = 7.9;
@@ -38,6 +40,57 @@ public final class Constants {
     public static String kRelease = "max";
     public static String kReturn = "min";
     public static String kElevatorManual = "manual";
+  }
+
+
+  public static class ShooterIntakeConstants {
+    public static Rotation2d kIntakeLowerPosition = Rotation2d.fromRotations(.4);   // in degrees
+    public static Rotation2d kIntakeHigherPosition = Rotation2d.fromRotations(0.07);  // in degrees
+    public static Rotation2d kShooterIntakePosition = Rotation2d.fromDegrees(-40);  // in degrees
+    public static Rotation2d kShooterMaxPosition = Rotation2d.fromDegrees(80);
+    public static double kShooterVelocity = 5;  // in meters per second
+  }
+
+  public static class IntakeConstants {
+    public static int kPitchMotorCanId = 28;
+    public static int kIntakeMotorCanId = 18;
+    public static int kPitchEncoderCanId = 20;
+    public static int kLimitSwitchPort = 0;
+    public static double kPitchP = 0.1;
+    public static double kPitchI = 0;
+    public static double kPitchD = 0; // .1
+    public static double kPitchKG = -.1;
+    public static double kIntakeTolerance = 5 * Math.PI / 180;
+  }
+
+  public static class ShooterConstants {
+    public static double kShootingRotatingP = 0.001;
+    public static double kShootingRotatingI = 0;
+    public static double kShootingRotatingD = 0;
+    public static double kShootingKG = 0.07; // power needed to keep motor steay when facing straight out
+    public static int kShootingRotatingCanId = 21;
+    public static int kShooterIntakeCanId = 10;
+    public static int kShootingLeftCanId = 12;
+    public static int kShootingRightCanId = 13;
+    public static int kLimitSwitchPort = 1;
+    // public static double kShooterTolerance = 2 * Math.PI / 180; // in radians
+    public static int kShooterRotatingEncoderCanId = 15;
+    public static double kShooterTolerance = 2 * Math.PI / 180;
+  }
+
+  public static class FieldConstants {
+    // constants here should be in meters
+    public static double kSpeakerHeightClose = 2.11;
+    public static double kSpeakerHeightFar = 1.98;
+    public static double kCloseEdgeFromTag = .46;
+
+    public static double kRedSpeakerTagID = 4;
+    public static double kBlueSpeakerTagID = 7;
+  }
+
+  public static class RobotConstants {
+    // constants here should be in meters
+    public static double kShooterHeight = 4;
   }
 
   public static class ControllerConstants {
@@ -51,9 +104,9 @@ public final class Constants {
     public static double kDriveDeadzone = 0.1;
     public static int kHelperJoystickPort = 1;
   }
+
   public static class DriveConstants {
     public static double kMaxSpeedMetersPerSecond = 4.5;
-
 
     // Chassis configuration
     public static double kTrackWidth = Units.inchesToMeters(28);
@@ -67,8 +120,6 @@ public final class Constants {
       new Translation2d(-kWheelBase / 2, -kTrackWidth / 2)
       );
     
-
-
     // SPARK MAX CAN IDs
     public static int kFrontLeftDrivingCanId = 6;
     public static int kRearLeftDrivingCanId = 4;

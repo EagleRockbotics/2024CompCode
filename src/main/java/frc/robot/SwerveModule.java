@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.controller.PIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.ctre.phoenix6.hardware.CANcoder;
 
@@ -19,11 +18,15 @@ public class SwerveModule {
     private final RelativeEncoder m_drivingEncoder;
     private final CANcoder m_turningEncoder;
 
-    private final SparkPIDController m_drivingPIDController;
+    // private final SparkPIDController m_drivingPIDController;
     private final PIDController m_turningPIDController;
+
+    private final PIDController m_driveVelocityPIDController;
 
     private double driveDirection = 1;
 
+    private double previousPos = 0;
+    //private final Timer clock;
 
     public SwerveModule(int drivingCANId, int turningCANId, int encoderNum, boolean reversedDrive,
             boolean reversedSteer) {
@@ -44,8 +47,9 @@ public class SwerveModule {
         
         m_turningPIDController = new PIDController(ModuleConstants.kTurningP, ModuleConstants.kTurningI,
                 ModuleConstants.kTurningD);
-        m_drivingPIDController = m_drivingSparkMax.getPIDController();
-        m_drivingPIDController.setFeedbackDevice(m_drivingEncoder);
+        // m_drivingPIDController = m_drivingSparkMax.getPIDController();
+        // m_drivingPIDController.setFeedbackDevice(m_drivingEncoder);
+        m_driveVelocityPIDController = new PIDController(ModuleConstants.kDrivingP, ModuleConstants.kDrivingI, ModuleConstants.kDrivingD);
 
         m_drivingEncoder.setPositionConversionFactor(ModuleConstants.kDrivingEncoderPositionFactor);
         m_drivingEncoder.setVelocityConversionFactor(ModuleConstants.kDrivingEncoderVelocityFactor);
@@ -55,11 +59,11 @@ public class SwerveModule {
             ModuleConstants.kTurningEncoderPositionPIDMaxInput
         );
         
-        m_drivingPIDController.setP(ModuleConstants.kDrivingP);
-        m_drivingPIDController.setI(ModuleConstants.kDrivingI);
-        m_drivingPIDController.setD(ModuleConstants.kDrivingD);
-        m_drivingPIDController.setFF(ModuleConstants.kDrivingFF);
-        m_drivingPIDController.setOutputRange(ModuleConstants.kDrivingMinOutput, ModuleConstants.kDrivingMaxOutput);
+        // m_drivingPIDController.setP(ModuleConstants.kDrivingP);
+        // m_drivingPIDController.setI(ModuleConstants.kDrivingI);
+        // m_drivingPIDController.setD(ModuleConstants.kDrivingD);
+        // m_drivingPIDController.setFF(ModuleConstants.kDrivingFF);
+        // m_drivingPIDController.setOutputRange(ModuleConstants.kDrivingMinOutput, ModuleConstants.kDrivingMaxOutput);
 
         m_drivingSparkMax.setIdleMode(ModuleConstants.kDrivingMotorIdleMode);
         m_turningSparkMax.setIdleMode(ModuleConstants.kTurningMotorIdleMode);
@@ -84,13 +88,28 @@ public class SwerveModule {
         return new SwerveModulePosition(driveDirection * m_drivingEncoder.getPosition(), getTurningAngle());
     }
 
+    /**
+     * Should be called every tick
+     * @return the velocity
+     */
+    public double getVelocity() {
+        double posDif = m_drivingEncoder.getPosition() - previousPos;
+        previousPos = m_drivingEncoder.getPosition();
+        return driveDirection * posDif / .02;
+    }
+
     public void setDesiredState(SwerveModuleState desiredState) {
         SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState, getTurningAngle());
 
         SmartDashboard.putNumber("Speed", optimizedDesiredState.speedMetersPerSecond);
         SmartDashboard.putNumber("ActualSpeed", m_drivingEncoder.getVelocity());
 
-        m_drivingPIDController.setReference(driveDirection*optimizedDesiredState.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
+        m_drivingSparkMax.set(
+            driveDirection*m_driveVelocityPIDController.calculate(
+                getVelocity(),
+                optimizedDesiredState.speedMetersPerSecond
+            )
+        );
         m_turningSparkMax.set(
             -m_turningPIDController.calculate(
                 getTurningAngle().getDegrees(), 

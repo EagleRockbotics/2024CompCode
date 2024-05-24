@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import frc.robot.Constants.ElevatorConstants;
@@ -9,8 +10,8 @@ import frc.robot.Constants.ElevatorConstants;
 public class Elevator {
     private final CANSparkMax m_LeftElevator;
     private final CANSparkMax m_RightElevator;
-    private final CANcoder m_LeftCanCoder;
-    private final CANcoder m_RightCanCoder;
+    // private final CANcoder m_LeftCanCoder;
+    // private final CANcoder m_RightCanCoder;
     // private String m_CurreCANntCommand = ElevatorConstants.kElevatorIdle;
     // private double m_elevatorSpeedLeft = 0;
     // private double m_elevatorSpeedRight = 0;
@@ -21,52 +22,54 @@ public class Elevator {
     public Elevator() {
         m_LeftElevator = new CANSparkMax(ElevatorConstants.kLeftElevatorCanID, MotorType.kBrushed);
         m_RightElevator = new CANSparkMax(ElevatorConstants.kRightElevatorCanID, MotorType.kBrushed);
-        m_LeftCanCoder = new CANcoder(ElevatorConstants.kLeftElevatorEncoderCanId);
-        m_RightCanCoder = new CANcoder(ElevatorConstants.kRightElevatorEncoderCanId);
+        // m_LeftCanCoder = new CANcoder(ElevatorConstants.kLeftElevatorEncoderCanId);
+        // m_RightCanCoder = new CANcoder(ElevatorConstants.kRightElevatorEncoderCanId);
+        m_LeftElevator.setIdleMode(IdleMode.kBrake);
+        m_RightElevator.setIdleMode(IdleMode.kBrake);
     }
 
-    public double[] getPositions() {
-        double[] positions = {m_LeftCanCoder.getPosition().getValueAsDouble(), m_RightCanCoder.getPosition().getValueAsDouble()};
-        return positions;
-    }
+    // public double[] getPositions() {
+    //     double[] positions = {m_LeftCanCoder.getPosition().getValueAsDouble(), m_RightCanCoder.getPosition().getValueAsDouble()};
+    //     return positions;
+    // }
 
-    public void setMaxHeight() {
-        if (m_LeftCanCoder.getPosition().getValueAsDouble() < ElevatorConstants.kElevatorMaxHeight) {
-            m_LeftElevator.set(1);
-        } else {
-            m_LeftElevator.set(0);
-        }
-        if (m_RightCanCoder.getPosition().getValueAsDouble() > ElevatorConstants.kElevatorMaxHeight) {
-            m_RightElevator.set(-1);
-        } else {
-            m_RightElevator.set(0);
-        }
-    }
+    // public void setMaxHeight() {
+    //     // if (m_LeftCanCoder.getPosition().getValueAsDouble() < ElevatorConstants.kElevatorMaxHeight) {
+    //         m_LeftElevator.set(1);
+    //     // } else {
+    //     //     m_LeftElevator.set(0);
+    //     // }
+    //     // if (m_RightCanCoder.getPosition().getValueAsDouble() > ElevatorConstants.kElevatorMaxHeight) {
+    //         m_RightElevator.set(-1);
+    //     // } else {
+    //         m_RightElevator.set(0);
+    //     // }
+    // }
 
-    public void setMinHeight() {
-        if (m_LeftCanCoder.getPosition().getValueAsDouble() < ElevatorConstants.kElevatorDownHeight) {
-            m_LeftElevator.set(1);
-        } else {
-            m_LeftElevator.set(0);
-        }
-        if (m_RightCanCoder.getPosition().getValueAsDouble() > -ElevatorConstants.kElevatorDownHeight) {
-            m_RightElevator.set(-1);
-        } else {
-            m_RightElevator.set(0);
-        }
-    }
+    // public void setMinHeight() {
+    //     if (m_LeftCanCoder.getPosition().getValueAsDouble() < ElevatorConstants.kElevatorDownHeight) {
+    //         m_LeftElevator.set(1);
+    //     } else {
+    //         m_LeftElevator.set(0);
+    //     }
+    //     if (m_RightCanCoder.getPosition().getValueAsDouble() > -ElevatorConstants.kElevatorDownHeight) {
+    //         m_RightElevator.set(-1);
+    //     } else {
+    //         m_RightElevator.set(0);
+    //     }
+    // }
 
     public void manual(double leftSpeed, double rightSpeed) {
-        if (m_LeftCanCoder.getPosition().getValueAsDouble() < ElevatorConstants.kElevatorDownHeight) {
+        // if (m_LeftCanCoder.getPosition().getValueAsDouble() < ElevatorConstants.kElevatorDownHeight) {
             m_LeftElevator.set(-leftSpeed);
-        } else {
-            m_LeftElevator.set(0);
-        }
-        if (m_RightCanCoder.getPosition().getValueAsDouble() > -ElevatorConstants.kElevatorDownHeight) {
+        // } else {
+        //     m_LeftElevator.set(0);
+        // }
+        // if (m_RightCanCoder.getPosition().getValueAsDouble() > -ElevatorConstants.kElevatorDownHeight) {
             m_RightElevator.set(rightSpeed);
-        } else {
-            m_RightElevator.set(0);
-        }
+        // } else {
+        //     m_RightElevator.set(0);
+        // }
     }
 
     public void HuenemeComp(double leftSpeed, double rightSpeed) {
@@ -114,8 +117,8 @@ public class Elevator {
     /**
      * Function to be called on teleop init
      */
-    public void teleopInit() {
-        m_LeftCanCoder.setPosition(-ElevatorConstants.kElevatorDownHeight);
-        m_RightCanCoder.setPosition(ElevatorConstants.kElevatorDownHeight);
-    }
+    // public void teleopInit() {
+    //     m_LeftCanCoder.setPosition(-ElevatorConstants.kElevatorDownHeight);
+    //     m_RightCanCoder.setPosition(ElevatorConstants.kElevatorDownHeight);
+    // }
 }

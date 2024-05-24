@@ -24,6 +24,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.FieldConstants;
 
 class Camera {
   PhotonCamera self;
@@ -62,6 +63,8 @@ class Camera {
     zOffset = 0;
 
   }
+
+  
 
   public Camera(String name, double pOffset, double yaOffset, double rOffset, double xoffset, double yoffset,
       double zoffset) {
@@ -142,22 +145,50 @@ public class VisionSubsystem extends SubsystemBase {
       var camera = entry.getKey();
       for (PhotonTrackedTarget tag : entry.getValue()) {
         var id = tag.getFiducialId();
-        // x
-        var pitchAngle = tag.getPitch() + camera.pitchOffest;
-        // z
-        var yawAngle = tag.getYaw();
-        var tagHeight = tagOffset.get(id);
-
-        var tempxDist = (tagHeight - camera.zOffset) / Math.tan(pitchAngle * Math.PI / 180);
-
-        Rotation2d rotation = new Rotation2d(robotAngle.getDegrees() + yawAngle + camera.yawOffset);
-        Translation2d translation = new Translation2d(tempxDist, rotation);
+        
+        Rotation2d rotation = new Rotation2d(robotAngle.getDegrees() + getYawAngle(tag, camera));
+        Translation2d translation = new Translation2d(getDistanceMagnitude(tag, camera), rotation);
         translation = translation.plus(new Translation2d(camera.xOffset, camera.yOffset).rotateBy(rotation));
         
         out.put(Integer.valueOf(id), new Transform2d(translation, Rotation2d.fromDegrees(0)));
       }
     }
     return out;
+  }
+
+  public HashMap<Integer, Double> getDistancesMagnitudes () {
+    HashMap<Integer, Double> distances = new HashMap<>();
+    for (Map.Entry<Camera, List<PhotonTrackedTarget>> entry : tags.entrySet()) {
+      for (PhotonTrackedTarget tag : entry.getValue()) {
+          distances.put(tag.getFiducialId(), getDistanceMagnitude(tag, entry.getKey()));
+      }
+    }
+    return distances;
+  }
+
+  public Double[] getDistanceMagnitudesList () {
+    List<Double> distances = new ArrayList<>();
+     for (Map.Entry<Camera, List<PhotonTrackedTarget>> entry : tags.entrySet()) {
+      for (PhotonTrackedTarget tag : entry.getValue()) {
+          distances.add(getDistanceMagnitude(tag, entry.getKey()));
+      }
+    }
+    Double[] out = new Double[distances.size()];
+    for (int i = 0; i < out.length; i++) {
+      out[i] = distances.get(i);
+    }
+    return out;
+
+  }
+
+  public HashMap<Integer, Double> getYawAngles () {
+    HashMap<Integer, Double> angles = new HashMap<>();
+    for (Map.Entry<Camera, List<PhotonTrackedTarget>> entry : tags.entrySet()) {
+      for (PhotonTrackedTarget tag : entry.getValue()) {
+          angles.put(tag.getFiducialId(), getYawAngle(tag, entry.getKey()));
+      }
+    }
+    return angles;
   }
 
   public List<Pose2d> getRobotPose(Rotation2d rotation) {
@@ -172,5 +203,37 @@ public class VisionSubsystem extends SubsystemBase {
 
     return poses;
   }
+
+  public double getDistanceMagnitude(PhotonTrackedTarget target, Camera camera) {
+    var tagHeight = tagOffset.get(target.getFiducialId());
+    var tempxDist = (tagHeight - camera.zOffset) / Math.tan((target.getPitch() + camera.pitchOffest) * Math.PI / 180);
+    return tempxDist;
+  } 
+
+
+  public double getYawAngle (PhotonTrackedTarget target, Camera camera) {
+    return target.getYaw() + camera.yawOffset;
+  }
+
+  public double getSpeakerTargetDistance() {
+    for (Map.Entry<Integer, Double> entry : getDistancesMagnitudes().entrySet()) {
+      if (entry.getKey() == FieldConstants.kBlueSpeakerTagID || entry.getKey() == FieldConstants.kRedSpeakerTagID) {
+        return entry.getValue().doubleValue();
+      }
+    }
+    return Double.NaN;
+  }
+
+  public double getSpeakerTargetYaw() {
+    for (Map.Entry<Integer, Double> entry : getYawAngles().entrySet()) {
+      if (entry.getKey() == FieldConstants.kBlueSpeakerTagID || entry.getKey() == FieldConstants.kRedSpeakerTagID) {
+        return entry.getValue().doubleValue();
+      }
+    }
+    return Double.NaN;
+  }
+
+  
+
 
 }

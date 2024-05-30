@@ -209,12 +209,24 @@ public class Robot extends TimedRobot {
     // );
 
     // SmartDashboard.putNumberArray("Limelight Distance Vector Magnitude", (Double[]) m_visionSystem.getDistancesMagnitudes().values().toArray());
-    if (m_HelperStick.getRawButton(3)) {
-      m_intake.setPosition(true);
-    } else {
-      m_intake.setPosition(false);
-      // m_intake.runIntake(0);
+    
+    // if (m_HelperStick.getRawButton(3)) {
+    //   m_intake.setPosition(true);
+    // } else {
+    //   m_intake.setPosition(false);
+    //   // m_intake.runIntake(0);
+    // }
+
+
+    // for Dalia event while encoders aren't on the intake
+    if (m_HelperStick.getRawAxis(3) > 0) {
+      m_intake.runPitchMotor(.5);
+    } else if (m_HelperStick.getRawAxis(2) > 0) {
+      m_intake.runPitchMotor(-.5);
     }
+    // 
+
+
     if (m_HelperStick.getRawButton(1)) {
       m_intake.runIntake(.5);
     } else {
